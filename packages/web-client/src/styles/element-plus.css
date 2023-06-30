@@ -1,0 +1,40 @@
+.el-header {
+    height: var(--header-height);
+}
+
+.el-main {
+    padding: 0 !important;
+    overflow: hidden !important;
+    height: var(--header-height);
+}
+
+.el-select{
+    width: 100% !important;
+}
+.el-message-box {
+    height: 90%;
+    max-width: 600px !important;
+}
+.el-input__wrapper {
+    border-radius: 50px !important;
+}
+
+.el-progress__text {
+    font-size: 0.85rem !important;
+    min-width: 35px !important;
+    margin-left: 7px !important;
+    text-align: right;
+}
+
+.el-divider--horizontal {
+    margin: 0 !important;
+}
+
+.el-button+.el-button {
+    margin: 0 !important;
+}
+
+.el-pagination {
+    align-items: center;
+    justify-content: center;
+}

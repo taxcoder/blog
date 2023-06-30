@@ -1,0 +1,66 @@
+.icon-home {
+    margin-right: 8px;
+    font-size: 0.98rem;
+    position: relative;
+    bottom: 0;
+}
+
+.icon-aircraft {
+    font-size: 0.95rem;
+    margin-right: 8px;
+    position: relative;
+    bottom: 1px;
+}
+
+.icon-brush {
+    font-size: 1rem;
+    margin-right: 8px;
+}
+
+.icon-arrow-up {
+    font-size: 1rem;
+    position: relative;
+    margin-left: 5px;
+    transition: all 0.35s;
+    bottom: 0;
+    transform: rotateZ(90deg);
+}
+
+.icon-search {
+    font-size: 1.5rem;
+    position: relative;
+    bottom: 0;
+}
+
+.img-sun {
+    width: 12px;
+    position: relative;
+    top: 0.1px;
+    left: 0.1px;
+}
+
+.icon-the-moon {
+    color: black;
+}
+
+.menu {
+    margin-left: 7px;
+}
+
+#page-nav.bgColor .nav-options,
+#page-nav.bgColor .icon-home,
+#page-nav.bgColor .icon-arrow-up,
+#page-nav.bgColor .icon-search,
+#page-nav.bgColor .icon-aircraft,
+#page-nav.bgColor .icon-brush {
+    color: white !important;
+}
+
+#page-nav.active .nav-options,
+#page-nav.active .icon-home,
+#page-nav.active .icon-arrow-up,
+#page-nav.active .icon-search,
+#page-nav.active .icon-aircraft,
+#page-nav.active .icon-brush {
+    color: black;
+}

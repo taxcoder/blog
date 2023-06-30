@@ -1,0 +1,35 @@
+@font-face {
+  /* 重命名字体名 */
+  font-family: 'pacifico';
+  /* 引入字体 */
+  src: url('Pacifico-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  /* 重命名字体名 */
+  font-family: 'dosis';
+  /* 引入字体 */
+  src: url('Dosis-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  /* 重命名字体名 */
+  font-family: 'honglei';
+  /* 引入字体 */
+  src: url('honglei.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  /* 重命名字体名 */
+  font-family: 'HarmonyOS';
+  /* 引入字体 */
+  src: url('HarmonyOSHans-Regular.woff2');
+  font-weight: normal;
+  font-style: normal;
+}

@@ -1,0 +1,22 @@
+{
+  "files": [],
+  "include": [
+    "src/**/.ts",
+    "src/**/.tsx",
+    "src/**/.vue",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015"
+  },
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
+}

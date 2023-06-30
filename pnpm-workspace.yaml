@@ -1,0 +1,11 @@
+packages:
+  # all packages in direct subdirs of packages/
+  - 'packages/*'
+  # all packages in subdirs of components/
+  - 'components/**'
+  # exclude packages that are inside test directories
+  - '!**/test/**'
+  # 加入工作空间的包
+  - 'apis/**'
+  # 加入工作空间的包
+  - 'utils/**'
