@@ -8,13 +8,15 @@
     height: var(--header-height);
 }
 
-.el-select{
+.el-select {
     width: 100% !important;
 }
+
 .el-message-box {
     height: 90%;
     max-width: 600px !important;
 }
+
 .el-input__wrapper {
     border-radius: 50px !important;
 }
@@ -30,11 +32,15 @@
     margin: 0 !important;
 }
 
-.el-button+.el-button {
+.el-button + .el-button {
     margin: 0 !important;
 }
 
 .el-pagination {
     align-items: center;
     justify-content: center;
+}
+
+.el-drawer__header {
+    display: block !important;
 }

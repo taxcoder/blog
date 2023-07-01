@@ -128,7 +128,6 @@ const content = reactive([
   text-align: center;
   font-size: 1.15rem;
   box-sizing: border-box;
-  cursor: pointer;
 }
 
 .content-name {

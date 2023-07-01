@@ -11,8 +11,8 @@
     <n-tab name="搜索" class="tab-hidden">
       <i class="iconfont icon-search" @click="open()" />
     </n-tab>
-    <n-tab name="菜单">
-      <n-icon size="28" class="menu">
+    <n-tab name="菜单" v-if="isShow">
+      <n-icon size="28" class="menu" @click="changeDrawer()">
         <Menu2 />
       </n-icon>
     </n-tab>
@@ -20,12 +20,19 @@
 </template>
 
 <script setup lang="ts">
+import { inject, computed } from 'vue';
 import { Menu2 } from '@vicons/tabler';
 import { open } from '@/common/search';
 import { useBaseStore } from '@/stores/base';
+import { useGlobalStore } from '@/stores/global';
 
-const base = useBaseStore();
+const base: any = useBaseStore();
+const global: any = useGlobalStore();
+
+const screenWidth: any = inject('screenWidth');
+
 const themeUpdate = (value: boolean) => base.setTheme(value);
+
 const railStyle = function ({ checked }: { checked: boolean }) {
   return {
     background: checked ? 'rgb(106 106 106)' : '#ffffff',
@@ -35,6 +42,14 @@ const railStyle = function ({ checked }: { checked: boolean }) {
     boxShadow: 'none',
   };
 };
+
+const changeDrawer = () => {
+  global.setIsOpenDrawer(true);
+};
+
+const isShow = computed(() => {
+  return screenWidth.value <= 1200;
+});
 </script>
 
 <style scoped>

@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref, onMounted, reactive } from 'vue';
+import { computed, inject, onMounted, reactive, ref } from 'vue';
 
 import { minWidth } from '@/config';
 import { useBaseStore } from '@/stores/base';
@@ -130,6 +130,12 @@ const change = computed(() => screenWidth.value <= minWidth);
   .article-list-card {
     width: 100%;
     padding: 0 15px 15px 15px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .article-list-card {
+    padding-bottom: 0;
   }
 }
 </style>

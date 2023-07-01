@@ -16,6 +16,7 @@ export default defineConfig({
     AutoImport({
       imports: [
         'vue',
+        'vue-router',
         {
           'naive-ui': ['useDialog', 'useMessage', 'useNotification', 'useLoadingBar'],
         },
@@ -23,6 +24,8 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     Components({
+      dts: true,
+      dirs: ['src/components', 'src/common'],
       resolvers: [ElementPlusResolver(), NaiveUiResolver()],
     }),
     ElementPlus({}),

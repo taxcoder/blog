@@ -55,8 +55,7 @@ export default defineComponent({
   methods: {
     flipDown() {
       // 判断获取的数据是否不为null
-      if (this.getBlogHomeCenter)
-        this.getBlogHomeCenter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (this.getBlogHomeCenter) this.getBlogHomeCenter.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
   },
   computed: {
@@ -87,7 +86,6 @@ export default defineComponent({
   animation: swing 1.5s infinite linear;
   animation-direction: alternate;
   animation-timing-function: ease-out;
-  cursor: pointer;
 }
 
 #img-down {

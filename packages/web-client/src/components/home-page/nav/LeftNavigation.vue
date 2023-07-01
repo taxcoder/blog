@@ -83,9 +83,7 @@ const changeRoute = (path: string) => {
   router.push(path);
 };
 
-const isPhone = computed(() => {
-  return screenWidth.value > navChangeWidth;
-});
+const isPhone = computed(() => screenWidth.value > navChangeWidth);
 
 watch(
   () => router.currentRoute.value,
@@ -110,7 +108,7 @@ watch(
 
 @media screen and (max-width: 400px) {
   .title {
-    font-size: 22px;
+    font-size: 1.2rem;
   }
 }
 

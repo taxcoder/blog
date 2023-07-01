@@ -16,7 +16,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-
 const loading = ref<boolean>(false);
 </script>
 

@@ -13,9 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-
-import WebSiteBoard from '@/components/user-info/WebSiteBoard.vue';
+import { ref, onMounted } from 'vue';
 
 const height = ref<number>(0);
 

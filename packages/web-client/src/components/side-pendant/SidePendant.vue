@@ -50,7 +50,8 @@
 </template>
 
 <script setup>
-import { inject } from 'vue';
+import { inject, ref, computed } from 'vue';
+
 import { ArrowUpOutline, SettingsSharp } from '@vicons/ionicons5';
 import { ArrowFit16Filled, DarkTheme20Filled } from '@vicons/fluent';
 import { ArrowsDiagonalMinimize2 } from '@vicons/tabler';

@@ -52,7 +52,8 @@
 #page-nav.bgColor .icon-arrow-up,
 #page-nav.bgColor .icon-search,
 #page-nav.bgColor .icon-aircraft,
-#page-nav.bgColor .icon-brush {
+#page-nav.bgColor .icon-brush,
+#page-nav.bgColor .menu {
     color: white !important;
 }
 
@@ -61,6 +62,7 @@
 #page-nav.active .icon-arrow-up,
 #page-nav.active .icon-search,
 #page-nav.active .icon-aircraft,
-#page-nav.active .icon-brush {
+#page-nav.active .icon-brush,
+#page-nav.active .menu {
     color: black;
 }

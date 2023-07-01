@@ -22,9 +22,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, reactive, onMounted, computed } from 'vue';
 import moment from 'moment';
-import { computed, onMounted, reactive, ref } from 'vue';
-import UserContainer from '@/components/user-info/UserContainer.vue';
 
 const hour = ref<string>(moment().format('H'));
 const week = ref<string>(moment().format('d'));

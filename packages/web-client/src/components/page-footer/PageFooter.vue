@@ -1,7 +1,7 @@
 <template>
   <div id="page-footer" :class="widthAdaption">
     <p>
-      <div>@{{ year }}{{ currentDate }} By {{ base.getWebSite.webSiteName }}</div>
+      <div>@{{ year }}{{ currentDate }} By {{ global.getWebSite.webSiteName }}</div>
       <div>本站已运行 {{ getEmptyDate }}</div>
     </p>
     <p>
@@ -13,11 +13,14 @@
 
 <script setup lang="ts">
 import moment from 'moment';
+
 import { computed, ref, inject } from 'vue';
 
 import { useBaseStore } from '@/stores/base';
+import { useGlobalStore } from '@/stores/global';
 
 const base = useBaseStore();
+const global = useGlobalStore();
 
 const screenWidth: any = inject('screenWidth');
 
@@ -48,7 +51,7 @@ const widthAdaption = computed(() => {
 }
 
 #page-footer.active {
-  padding-top: 20px;
+  padding-top: 40px;
   margin-top: 0 !important;
 }
 

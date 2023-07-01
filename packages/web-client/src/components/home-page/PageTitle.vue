@@ -10,17 +10,10 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
-
-import { useRoute } from 'vue-router';
-
+import { computed, reactive } from 'vue';
 const route = useRoute();
 
-let strings = reactive([
-  '君子成人之美，不成人之恶',
-  '智者不惑，仁者不忧，勇者不惧',
-  '静以修身，检以养德',
-]);
+let strings = reactive(['君子成人之美，不成人之恶', '智者不惑，仁者不忧，勇者不惧', '静以修身，检以养德']);
 
 const props = defineProps({
   title: {

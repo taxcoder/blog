@@ -13,8 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue';
-import UserContainer from './UserContainer.vue';
+import { ref, reactive, computed } from 'vue';
 
 const loading = ref<boolean>(true);
 

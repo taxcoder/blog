@@ -104,7 +104,6 @@ const updateTimeIsOpen = computed(() => {
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   line-height: 25px;
-  cursor: pointer;
 }
 
 .article-status {

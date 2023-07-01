@@ -347,7 +347,7 @@ html input[type="button"], /* 1 */
 input[type="reset"],
 input[type="submit"] {
   -webkit-appearance: button; /* 2 */
-  cursor: pointer; /* 3 */
+  cursor: url(@/assets/pointer/Hand2.cur), default; /* 3 */
 }
 
 /**
@@ -358,7 +358,7 @@ input[type="submit"] {
 
 button[disabled],
 html input[disabled] {
-  cursor: default;
+  cursor: url(@/assets/pointer/NO2.cur), default;
 }
 
 /**

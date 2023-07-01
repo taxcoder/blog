@@ -11,10 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, watch } from 'vue';
+import { inject, computed, watch } from 'vue';
 import { useBaseStore } from '@/stores/base';
-
-import UserIndex from '@/components/user-info/UserIndex.vue';
 
 const base = useBaseStore();
 

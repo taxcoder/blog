@@ -6,8 +6,6 @@
 </template>
 
 <script setup>
-import LeftNavigation from '@/components/home-page/nav/LeftNavigation.vue';
-import RightNavigation from '@/components/home-page/nav/RightNavigation.vue';
 import { computed } from 'vue';
 import { minWidth } from '@/config';
 

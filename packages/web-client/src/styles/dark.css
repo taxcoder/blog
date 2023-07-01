@@ -37,6 +37,7 @@
 .dark #page-nav.active .icon-arrow-up,
 .dark #page-nav.active .icon-search,
 .dark #page-nav.active .icon-aircraft,
-.dark #page-nav.active .icon-brush {
+.dark #page-nav.active .icon-brush,
+.dark #page-nav.active .menu{
     color: white !important;
 }
