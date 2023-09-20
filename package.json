@@ -3,23 +3,50 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check build-only",
-    "preview": "vite preview",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
+    "web-dev": "vite packages/web-client",
+    "web-build": "vite build packages/web-client",
+    "web-preview": "vite preview packages/web-client",
+    "web-format": "prettier --write packages/web-client/src/",
+    "manage-dev": "vite packages/manage-client",
+    "manage-build": "vite build packages/manage-client",
+    "manager-preview": "vite preview packages/manage-client",
+    "manager-format": "prettier --write packages/manage-client/src/"
   },
   "dependencies": {
-    "vue": "^3.3.2"
+    "@tanxiang/apis": "workspace:*",
+    "@tanxiang/utils": "workspace:*",
+    "@vueuse/core": "^10.4.1",
+    "axios": "^1.5.0",
+    "cropperjs": "^1.6.0",
+    "default-passive-events": "^2.0.0",
+    "highlight.js": "^11.8.0",
+    "katex": "^0.16.8",
+    "markdown-it-mark": "^3.0.1",
+    "md-editor-v3": "^4.6.1",
+    "mermaid": "^10.4.0",
+    "moment": "^2.29.4",
+    "pinia": "^2.1.6",
+    "pinia-plugin-persistedstate": "^3.2.0",
+    "screenfull": "^6.0.2",
+    "unplugin-auto-import": "^0.16.6",
+    "unplugin-vue-components": "^0.25.2",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4"
   },
   "devDependencies": {
     "@tsconfig/node18": "^2.0.1",
-    "@types/node": "^18.16.8",
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@types/node": "^18.17.15",
+    "@vitejs/plugin-vue": "^4.3.4",
     "@vue/tsconfig": "^0.4.0",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.8",
     "typescript": "~5.0.4",
-    "vite": "^4.3.5",
-    "vue-tsc": "^1.6.4"
-  }
+    "unplugin-element-plus": "^0.7.2",
+    "vite": "^4.4.9",
+    "vite-plugin-compression": "^0.5.1",
+    "vue-tsc": "^1.8.10"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

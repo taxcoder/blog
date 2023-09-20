@@ -9,10 +9,12 @@
     trigger="hover"
     type="line"
   >
-    <template #prefix><span class="title">Aurora Borealis</span></template>
+    <template #prefix>
+      <span class="title" v-text="global.getWebSite.name" @click="router.push('/list/article')" />
+    </template>
     <n-tab
       v-if="isPhone"
-      v-for="(item, index) in routerTabs"
+      v-for="(item, index) in routerTabs()"
       :name="item.name"
       @mouseenter="mouse(index, 'enter')"
       @mouseleave="mouse(index, 'leave')"
@@ -41,13 +43,15 @@
 import { nextTick, ref, computed, inject, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBaseStore } from '@/stores/base';
+import { useGlobalStore } from '@/stores/global';
 
 import { routerTabs, tabNames } from './index';
-import { navChangeWidth } from '@/config';
+import { minWidth } from '@/config';
 import type { ItemOptions } from '@/types/navigation-options';
 
 const router = useRouter();
 const base = useBaseStore();
+const global = useGlobalStore();
 
 const current = ref(-1);
 const timer = ref<undefined | number>(undefined);
@@ -71,19 +75,20 @@ const mouse = (index: number, status: string) => {
 };
 
 const select = (index: number, key: string) => {
-  let path: string = routerTabs[index].options.find((optionKey: ItemOptions) => optionKey.key === key).url;
+  let path: string = routerTabs()[index].options.find((optionKey: ItemOptions) => optionKey.key === key).url;
   changeRoute(path);
   base.setCurrent(index);
 };
 
 const isEmptyOptions = (p: ItemOptions[]): Boolean => p.length !== 0;
+
 const changeRoute = (path: string) => {
   // 如果不存在url或者是需要跳转的url和当前的路由一致，则取消
   if (!path && router.currentRoute.value.path === path) return;
-  router.push(path);
+  router.replace(path);
 };
 
-const isPhone = computed(() => screenWidth.value > navChangeWidth);
+const isPhone = computed(() => screenWidth.value > minWidth);
 
 watch(
   () => router.currentRoute.value,
@@ -98,6 +103,7 @@ watch(
 @import '@/components/home-page/index.css';
 
 .title {
+  cursor: pointer;
   color: white;
   margin-left: 20px;
   margin-right: 10px;

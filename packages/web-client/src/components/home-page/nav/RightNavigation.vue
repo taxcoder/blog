@@ -3,8 +3,8 @@
     <n-tab name="切换" class="tab-hidden">
       <n-switch :value="base.getTheme" class="theme-switch" :rail-style="railStyle" :on-update:value="themeUpdate">
         <template #icon>
-          <img src="@/assets/icons/sunrise.png" alt="sun" class="img-sun" v-if="!base.getTheme" />
-          <i class="iconfont icon-the-moon" v-else />
+          <img :src="sunFill" class="icon-sunfill" v-show="!base.getTheme" />
+          <i class="iconfont icon-the-moon" v-show="base.getTheme" />
         </template>
       </n-switch>
     </n-tab>
@@ -12,19 +12,18 @@
       <i class="iconfont icon-search" @click="open()" />
     </n-tab>
     <n-tab name="菜单" v-if="isShow">
-      <n-icon size="28" class="menu" @click="changeDrawer()">
-        <Menu2 />
-      </n-icon>
+      <i class="iconfont icon-menu" @click="changeDrawer()" />
     </n-tab>
   </n-tabs>
 </template>
 
 <script setup lang="ts">
+import sunFill from '@/assets/images/sun-fill.png';
 import { inject, computed } from 'vue';
-import { Menu2 } from '@vicons/tabler';
 import { open } from '@/common/search';
 import { useBaseStore } from '@/stores/base';
 import { useGlobalStore } from '@/stores/global';
+import { minWidth } from '@/config/index';
 
 const base: any = useBaseStore();
 const global: any = useGlobalStore();
@@ -48,7 +47,7 @@ const changeDrawer = () => {
 };
 
 const isShow = computed(() => {
-  return screenWidth.value <= 1200;
+  return screenWidth.value <= minWidth;
 });
 </script>
 

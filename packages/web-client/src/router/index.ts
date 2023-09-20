@@ -1,10 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import ArticleList from '@/views/article-list/ArticleList.vue';
+import { routeName } from '@/enum';
 
-const ClassificationList = () => import('@/views/classification-list/ClassificationList.vue');
+import ArticleList from '@/views/article-list/ArticleList.vue';
+import { useBaseStore } from '@/stores/base';
+
+const ClassificationArticle = () => import('@/views/classification-article/ClassificationArticle.vue');
+const TagList = () => import('@/views/tag-list/TagList.vue');
+const TagArticle = () => import('@/views/tag-article/TagArticle.vue');
 const ArchivedList = () => import('@/views/archived-list/ArchivedList.vue');
 const EssayList = () => import('@/views/essay-list/EssayList.vue');
+const ArticlePage = () => import('@/views/article-page/ArticlePage.vue');
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,7 +25,10 @@ const router = createRouter({
       path: '/list/article',
       component: ArticleList,
       meta: {
-        name: '首页',
+        name: routeName.home,
+        position: false,
+        showUserInfo: true,
+        isDraw: false,
       },
     },
     {
@@ -28,14 +37,42 @@ const router = createRouter({
       component: ArchivedList,
       meta: {
         name: '归档',
+        position: true,
+        showUserInfo: true,
+        isDraw: false,
       },
     },
     {
-      name: 'ClassificationList',
-      path: '/list/classification',
-      component: ClassificationList,
+      name: 'TagList',
+      path: '/list/tag',
+      component: TagList,
       meta: {
-        name: '分类',
+        name: '标签',
+        position: true,
+        showUserInfo: false,
+        isDraw: true,
+      },
+    },
+    {
+      name: 'TagArticle',
+      path: '/list/tag/:id',
+      component: TagArticle,
+      meta: {
+        name: '',
+        position: true,
+        showUserInfo: true,
+        isDraw: false,
+      },
+    },
+    {
+      name: 'classificationArticle',
+      path: '/list/classification/:id',
+      component: ClassificationArticle,
+      meta: {
+        name: '',
+        position: true,
+        showUserInfo: true,
+        isDraw: false,
       },
     },
     {
@@ -44,6 +81,20 @@ const router = createRouter({
       component: EssayList,
       meta: {
         name: '随笔',
+        position: true,
+        showUserInfo: false,
+        isDraw: true,
+      },
+    },
+    {
+      name: 'ArticlePage',
+      path: '/articles/:id',
+      component: ArticlePage,
+      meta: {
+        name: routeName.article,
+        position: true,
+        showUserInfo: false,
+        isDraw: false,
       },
     },
   ],

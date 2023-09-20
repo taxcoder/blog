@@ -1,18 +1,22 @@
-import { fileURLToPath, URL } from 'node:url';
-
 import { defineConfig } from 'vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { ElementPlusResolver, NaiveUiResolver } from 'unplugin-vue-components/resolvers';
-// @ts-ignore
 import ElementPlus from 'unplugin-element-plus/vite';
 
+import viteCompression from 'vite-plugin-compression';
 import vue from '@vitejs/plugin-vue';
+//@ts-ignore
+import { fileURLToPath } from 'url';
 
-// https://vitejs.dev/config/
-export default defineConfig({
+const config = defineConfig({
   plugins: [
     vue(),
+    viteCompression({
+      deleteOriginFile: false,
+      algorithm: 'gzip',
+      ext: '.gz',
+    }),
     AutoImport({
       imports: [
         'vue',
@@ -35,4 +39,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    port: 5137,
+    open: true,
+  },
 });
+
+export default config;

@@ -1,12 +1,12 @@
 <template>
   <div id="page-footer" :class="widthAdaption">
     <p>
-      <div>@{{ year }}{{ currentDate }} By {{ global.getWebSite.webSiteName }}</div>
-      <div>本站已运行 {{ getEmptyDate }}</div>
+      <span>@{{ year }}{{ currentDate }} By {{ webSiteName }}</span>
+      <span>本站已运行 {{ time }}</span>
     </p>
     <p>
-      <div>浙公网安备 33032202000202号</div>
-      <div>湘ICP备2023005418号</div>
+      <span>浙公网安备 33032202000202号</span>
+      <span>湘ICP备2023005418号</span>
     </p>
   </div>
 </template>
@@ -14,30 +14,43 @@
 <script setup lang="ts">
 import moment from 'moment';
 
-import { computed, ref, inject } from 'vue';
+import { computed, ref, inject, onMounted, nextTick } from 'vue';
 
 import { useBaseStore } from '@/stores/base';
 import { useGlobalStore } from '@/stores/global';
+//@ts-ignore
+import { useDate } from '@tanxiang/utils/index.ts';
 
 const base = useBaseStore();
 const global = useGlobalStore();
+const { headway } = useDate();
+
+const time = ref<string>('');
+const timer = ref<number | null>(null);
 
 const screenWidth: any = inject('screenWidth');
 
-const year = ref<number>(2023);
+onMounted(() => {
+  nextTick(() => loopUpdateTime());
+});
+
+const loopUpdateTime = () => {
+  timer.value = setInterval(() => {
+    time.value = global.getWebSite ? headway(global.getWebSite.createTime) : '';
+    // loopUpdateTime();
+  }, 1000 * 60);
+};
 
 const currentDate = computed(() => {
   let ment = parseInt(moment().format('y'));
   return ment - year.value <= 0 ? '' : '-' + ment;
 });
 
-const getEmptyDate = computed(() => {
-  return '365天12时24分35秒';
-});
+const webSiteName = computed(() => global.getWebSite.userName);
 
-const widthAdaption = computed(() => {
-  return { active: screenWidth.value <= 600 };
-});
+const year = computed(() => new Date(global.getWebSite.createTime).getFullYear());
+
+const widthAdaption = computed(() => ({ active: screenWidth.value <= 600 }));
 </script>
 
 <style scoped>
@@ -68,17 +81,23 @@ const widthAdaption = computed(() => {
   height: 50px;
 }
 
-#page-footer > p > div {
+#page-footer > p > span {
   padding: 0 5px;
   display: inline-block;
 }
 
-#page-footer.active > p > div {
+#page-footer.active > p > span {
   text-align: center !important;
   font-size: 0.95rem;
 }
 
-#page-footer > p > div:last-child {
+#page-footer > p > span:last-child {
   text-align: right;
+}
+
+@media all and (max-width: 1200px) {
+  #page-footer {
+    margin-top: 70px !important;
+  }
 }
 </style>

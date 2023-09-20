@@ -8,13 +8,13 @@
       <el-avatar :size="110" shape="circle" fit="cover" :src="head" alt="头像" class="user-avatar" />
       <span class="status" />
     </div>
-    <div class="web-site-author">北极光</div>
-    <div class="web-site-info">我们所过的每个平凡的日常也许就是连续发生的奇迹</div>
+    <div class="web-site-author">{{ author }}</div>
+    <div class="web-site-info">{{ motto }}</div>
     <div class="web-site-data">
       <el-row :gutter="20" class="content-row" :style="{ height: '100%', width: '100%' }">
-        <el-col :span="24 / content.length" v-for="item in content">
+        <el-col :span="24 / global.getWebSite.count.length" v-for="item in global.getWebSite.count">
           <div class="grid-content ep-bg-purple">
-            <p v-text="item.count" class="content-count" />
+            <p v-text="item.num" class="content-count" />
             <p v-text="item.name" class="content-name" />
           </div>
         </el-col>
@@ -24,24 +24,16 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { computed } from 'vue';
+
+import { useGlobalStore } from '@/stores/global';
 
 import head from '@/assets/images/头像.jpeg';
 
-const content = reactive([
-  {
-    name: '文章',
-    count: 111,
-  },
-  {
-    name: '文章',
-    count: 111,
-  },
-  {
-    name: '文章',
-    count: 111,
-  },
-]);
+const global = useGlobalStore();
+
+const author = computed(() => global.getWebSite.userName);
+const motto = computed(() => global.getWebSite.motto);
 </script>
 
 <style scoped>
@@ -61,7 +53,7 @@ const content = reactive([
 }
 
 .bg-img {
-  background: url('@/assets/images/bg-head.png') left;
+  background: url('http://tx-blog.oss-cn-shenzhen.aliyuncs.com/profilePhoto/head-1691816160056.png') left;
   top: -3px;
 }
 
@@ -89,21 +81,21 @@ const content = reactive([
   background: #6bdf8f;
   border-radius: 50%;
   position: absolute;
-  bottom: 18px;
-  right: 88px;
+  bottom: 15px;
+  right: 100px;
   border: 5px solid #fff;
   z-index: 10;
 }
 
 .web-site-author {
   text-align: center;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   padding-left: 20px;
   padding-right: 20px;
 }
 
 .web-site-info {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-align: center;
   margin-top: 15px;
   padding: 0 45px !important;
@@ -133,7 +125,7 @@ const content = reactive([
 .content-name {
   font-size: 0.9rem;
   text-align: center;
-  font-family: HarmonyOS, sans-serif;
+  font-family: 'round', sans-serif;
 }
 
 .web-site-author,
@@ -147,6 +139,6 @@ const content = reactive([
   font-size: 1.25rem;
   text-align: center;
   margin-bottom: 20px;
-  font-family: 'HarmonyOS', sans-serif;
+  font-family: 'round', sans-serif;
 }
 </style>

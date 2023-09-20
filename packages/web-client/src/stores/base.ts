@@ -1,14 +1,20 @@
 import { defineStore } from 'pinia';
 
-const current: any = localStorage.getItem('current');
+let current: any = localStorage.getItem('current');
+let theme: any = localStorage.getItem('theme');
+let openActive: any = localStorage.getItem('openActive');
+let openUserActive: any = localStorage.getItem('openUserActive');
 
 export const useBaseStore = defineStore('base', {
   state: () => {
     return {
-      theme: (localStorage.getItem('theme') === 'dark') as boolean,
+      theme: (theme === 'dark') as boolean,
       current: (!isNaN(parseFloat(current)) && isFinite(current) ? parseInt(current) : 0) as number,
-      openActive: (localStorage.getItem('openActive') === 'true') as boolean,
-      openUserActive: (localStorage.getItem('openUserActive') !== 'false') as boolean,
+      openActive: (openActive === 'true') as boolean,
+      openUserActive: (openUserActive !== 'false') as boolean,
+      title: '',
+      isLoadingShow: false,
+      reload: false,
     };
   },
   getters: {
@@ -24,6 +30,15 @@ export const useBaseStore = defineStore('base', {
     getOpenUserActive(state) {
       return state.openUserActive;
     },
+    getTitle(state) {
+      return state.title;
+    },
+    getIsLoadingShow(state) {
+      return state.isLoadingShow;
+    },
+    getReload(state) {
+      return state.reload;
+    },
   },
   actions: {
     setTheme(newTheme: boolean) {
@@ -38,9 +53,18 @@ export const useBaseStore = defineStore('base', {
     setOpenUserActive(newOpenUserActive: boolean) {
       this.openUserActive = newOpenUserActive;
     },
+    setTitle(newTitle: string) {
+      this.title = newTitle;
+    },
+    setIsLoadingShow(newIsLoadingShow: boolean) {
+      this.isLoadingShow = newIsLoadingShow;
+    },
+    setReload(newReload: boolean) {
+      this.reload = newReload;
+    },
   },
   persist: {
-    paths: ['theme', 'current', 'openActive', 'openUserActive'],
-    storage: localStorage,
+    key: 'base',
+    paths: ['current', 'openActive', 'openUserActive'],
   },
 });

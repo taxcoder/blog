@@ -1,9 +1,5 @@
 <template>
-  <user-container>
-    <template v-slot:title>
-      <img alt="倒计时" class="countdown" src="@/assets/images/countdown.png" />
-      <span class="process-bar">人生进度条</span>
-    </template>
+  <user-container title="人生进度条" iconClass="icon-countDown" :size="22">
     <template v-slot:content>
       <div v-for="(item, index) in process" :key="index">
         <el-text class="text-style" size="small" tag="p" type="info" v-html="currentDate(index)" />
@@ -24,6 +20,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, computed } from 'vue';
 import moment from 'moment';
+import UserContainer from '@/components/user-info/UserContainer.vue';
 
 const hour = ref<string>(moment().format('H'));
 const week = ref<string>(moment().format('d'));
@@ -72,16 +69,8 @@ const currentProcess = computed(() => (index: number) => {
 </script>
 
 <style scoped>
-.process-bar {
-  font-size: 1.05rem;
-  line-height: 30px;
-  text-align: right;
-  font-family: 'HarmonyOS', sans-serif;
-  margin-right: 5px;
-}
-
 .countdown {
-  width: 25px;
+  width: 24px;
 }
 
 .text-style {

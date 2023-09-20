@@ -1,0 +1,31 @@
+/* 初始化操作 */
+@import url('dark.css');
+@import url('antd.css');
+@import url('format.css');
+@import url('normalize.css');
+
+:root {
+    --header-height: 84px;
+    --header-tab-bar-height: 36px;
+    --header-user-height: 50px;
+    --header-tab-bar-padding-left: 15px;
+    --header-tab-bar-padding-right: 4px;
+}
+
+#app {
+    height: 100%;
+}
+
+.icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+.ant-layout-header,
+.ant-layout-sider,
+.ant-menu-submenu {
+    user-select: none !important;
+}

@@ -2,7 +2,7 @@
   <div id="title">
     <div class="page-title">{{ props.title }}</div>
     <div class="typed" v-show="typedShow">
-      <vuetyped :strings="strings" :loop="true" :smart-backspace="true">
+      <vuetyped :strings="strings" :loop="true" :smart-backspace="true" :key="global.getWebSite.text">
         <div class="typing" />
       </vuetyped>
     </div>
@@ -10,17 +10,19 @@
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue';
+import { computed, defineProps } from 'vue';
+import { useRoute } from 'vue-router';
+import { useGlobalStore } from '@/stores/global';
+
 const route = useRoute();
 
-let strings = reactive(['君子成人之美，不成人之恶', '智者不惑，仁者不忧，勇者不惧', '静以修身，检以养德']);
+const global = useGlobalStore();
 
 const props = defineProps({
-  title: {
-    type: String,
-    require: true,
-  },
+  title: { type: String, require: true },
 });
+
+const strings = computed(() => (global.getWebSite.text ? global.getWebSite.text : ['hello world']));
 
 const typedShow = computed(() => {
   return strings.length !== 0 && route.meta['name'] === '首页';
@@ -37,8 +39,7 @@ const typedShow = computed(() => {
   width: 100%;
   height: calc(100% - 60px);
   color: white;
-
-  font-family: HarmonyOS, sans-serif;
+  font-family: 'round', sans-serif;
 }
 
 .page-title {
@@ -49,6 +50,8 @@ const typedShow = computed(() => {
   bottom: 50px;
   width: 100%;
   font-size: 3.25rem;
+  text-align: center;
+  min-width: 350px;
 }
 
 .typed {
@@ -58,6 +61,12 @@ const typedShow = computed(() => {
   position: relative;
   width: 100%;
   font-size: 1.35rem;
-  font-family: 'pacifico', sans-serif;
+  font-family: 'round', sans-serif;
+}
+
+@media screen and (max-width: 600px) {
+  .page-title {
+    font-size: 8vw;
+  }
 }
 </style>

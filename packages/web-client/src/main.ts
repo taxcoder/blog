@@ -1,28 +1,32 @@
-import 'element-plus/theme-chalk/dark/css-vars.css';
-import 'element-plus/es/components/message/style/css';
-
-import '@/assets/font/fonts.css';
-import '@/assets/font/iconfont/iconfont.css';
-
-import '@/styles/index.css';
+import '@/config/icons';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import 'default-passive-events';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+
+import '@/config/markdown';
 
 import App from './App.vue';
 import router from './router';
 // @ts-ignore
 import vueTyped from 'vue3typed';
+import { useBaseStore } from '@/stores/base';
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 const app = createApp(App);
-const pinia = createPinia();
 
-pinia.use(piniaPluginPersistedstate);
-app.use(pinia);
 app.use(router);
+app.use(pinia);
 app.use(vueTyped);
 
 app.mount('#app');
+
+router.beforeEach((to, from, next) => {
+  const base = useBaseStore();
+  base.setIsLoadingShow(false);
+  next();
+});

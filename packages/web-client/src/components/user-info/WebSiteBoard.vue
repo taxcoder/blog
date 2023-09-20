@@ -1,30 +1,25 @@
 <template>
-  <user-container>
-    <template v-slot:title>
-      <img src="@/assets/images/horn.png" alt="通知" class="horn" />
-      <span class="bulletin-board">公告栏目</span>
-    </template>
+  <user-container title="公告栏目" iconClass="icon-gonggao1" :size="25">
     <template v-slot:content>
       <div class="board-content">
-        <el-text size="small">暂时没有想说的</el-text>
+        <el-text size="small">{{ bulletinBoard }}</el-text>
       </div>
     </template>
   </user-container>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useGlobalStore } from '@/stores/global';
+
+const global: any = useGlobalStore();
+
+const bulletinBoard = computed(() => global.getWebSite.bulletinBoard);
+</script>
 
 <style scoped>
 .horn {
   width: 30px;
-}
-
-.bulletin-board {
-  font-size: 1.05rem;
-  line-height: 30px;
-  text-align: right;
-  font-family: 'HarmonyOS', sans-serif;
-  margin-right: 10px;
 }
 
 .board-content {

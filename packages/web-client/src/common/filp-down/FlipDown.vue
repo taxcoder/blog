@@ -34,7 +34,6 @@ export default defineComponent({
     return { windowHeight, hover };
   },
   props: {
-    to: { type: String, default: '' },
     theme: { type: Boolean, default: true },
     bottom: { type: Number, default: 30 },
     size: { type: Number, default: 24 },
@@ -54,15 +53,10 @@ export default defineComponent({
   },
   methods: {
     flipDown() {
-      // 判断获取的数据是否不为null
-      if (this.getBlogHomeCenter) this.getBlogHomeCenter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.$emit('toNode');
     },
   },
   computed: {
-    getBlogHomeCenter() {
-      // 获取可视页面高度
-      return document.getElementById(this.to);
-    },
     hideFlipDown() {
       // 当隐藏高度没有传入时，就根据可视窗口高度的四分之一来进行隐藏
       let hide = this.hideHeight === -1;

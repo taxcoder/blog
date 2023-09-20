@@ -2,18 +2,22 @@
   <div id="home-page" :style="setBackImage()">
     <page-navigation :scrollStatus="scrollStatus" :screenWidth="screenWidth" />
     <page-title :title="props.title" />
-    <flip-down :bottom="30" to="start" />
+    <flip-down :bottom="30" @toNode="toNode" />
   </div>
 </template>
 
-<script setup>
-import { inject } from 'vue';
+<script setup lang="ts">
+import { inject, ref } from 'vue';
 import { useBaseStore } from '@/stores/base';
 
-const base = useBaseStore();
+import { usePage } from '@tanxiang/utils';
 
-const scrollStatus = inject('scrollStatus');
-const screenWidth = inject('screenWidth');
+const base = useBaseStore();
+const { getOffsetTop } = usePage();
+
+const scrollStatus: any = inject('scrollStatus');
+const screenWidth: any = inject('screenWidth');
+const scrollBar: any = inject('scrollBar');
 
 const props = defineProps({
   title: {
@@ -21,6 +25,16 @@ const props = defineProps({
     required: true,
   },
 });
+
+const toNode = () => {
+  let top: any = getOffsetTop(document.getElementById('start'));
+  let nav: any = document.getElementById('page-nav')?.clientHeight;
+  let start: any = Math.floor((top - nav) / 10) * 10;
+  if (scrollStatus.current < start) {
+    scrollBar.value.scrollBy({ left: 0, top: start - scrollStatus.current < 100 ? 10 : 100 });
+    window.requestAnimationFrame(toNode);
+  }
+};
 
 const setBackImage = () => {
   return {

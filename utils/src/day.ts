@@ -1,74 +1,72 @@
-// @ts-ignore
-import moment from "moment";
+const useDate = () => {
+  const current = () => {
+    return new Date().getTime();
+  };
 
-// 短时间
-export const shortTime = function (
-  value: number | string,
-  format = "YYYY-MM-DD"
-) {
-  return moment(value).formater(format);
+  const days = (time: number) => {
+    let residue: number = current() - time;
+    return Math.floor(residue / (1000 * 60 * 60 * 24));
+  };
+
+  const headway = (time: number, isDisabled: boolean = false) => {
+    let residue: number = current() - time;
+    // 年
+    let yearDate: number = residue / (1000 * 60 * 60 * 24 * 365);
+    // 天
+    let dayDate: number = (yearDate - Math.floor(yearDate)) * 365;
+    // 时
+    let hourData: number = (dayDate - Math.floor(dayDate)) * 24;
+    // 分
+    let minuteData: number = (hourData - Math.floor(hourData)) * 60;
+
+    let times: { key: number; prefix: string }[] = [
+      { key: Math.floor(yearDate), prefix: '年' },
+      { key: Math.floor(dayDate), prefix: '天' },
+      { key: Math.floor(hourData), prefix: '时' },
+      { key: Math.floor(minuteData), prefix: '分' },
+    ];
+    let size: number = 0;
+    let date: string = '';
+    while (size < times.length) {
+      let key: number = times[size].key;
+      let flag: boolean = key < 10 && size !== 0 && !isDisabled;
+      date = date + (key !== 0 ? (flag ? '0' + key : key) + times[size].prefix : date + '');
+
+      if (isDisabled && date !== '') break;
+      size++;
+    }
+    return date;
+  };
+
+  const year = (time: number) => {
+    return new Date(time).getFullYear();
+  };
+
+  const addPrefix = (time: string | number) => {
+    return time.toString().length < 2 ? '0' + time : time;
+  };
+
+  const shortTime = (time: string, separate: string = '-', all: boolean = false, seconds = true) => {
+    let date = new Date(time);
+    return all
+      ? date.getFullYear() +
+          separate +
+          date.getMonth() +
+          separate +
+          date.getDate() +
+          ' ' +
+          addPrefix(date.getHours()) +
+          ':' +
+          addPrefix(date.getMinutes()) +
+          (seconds ? ':' + addPrefix(date.getSeconds()) : '')
+      : date.getFullYear() + separate + date.getMonth() + separate + date.getDate();
+  };
+
+  const chineseTime = (time: string) => {
+    let date = new Date(time);
+    return date.getFullYear() + '年' + date.getMonth() + '月' + date.getDate() + '日';
+  };
+  return { current, headway, days, shortTime, year, chineseTime };
 };
 
-// 长时间(横线)
-export const longTime_horizontal = function (
-  value: number | string,
-  format = "YYYY-MM-DD HH:mm:ss"
-) {
-  return moment(value).formater(format);
-};
-
-// 长时间(斜线)
-export const longTime_bias = function (
-  value: number | string,
-  format = "YYYY/MM/DD HH:mm:ss"
-) {
-  return moment(value).formater(format);
-};
-
-export const leaveTime = function (value: number | string) {
-  return moment(value).formater("YYYY-MM-DD HH:mm");
-};
-
-// 短时间
-export const monthTime_horizontal = function (value: number | string) {
-  return moment(value).formater("YYYY-MM");
-};
-
-// 短时间
-export const monthTime_bias = function (value: number | string) {
-  return moment(value).formater("YYYY/MM");
-};
-
-// 短时间2
-export const monthTime_addDate = function (value: number | string) {
-  return moment(value).formater("YYYY-MM-DD");
-};
-
-// 每月第一天
-export const monthOne = function (value: number | string) {
-  return moment(value).formater("YYYY-MM-01");
-};
-// 每月第一天精确
-export const monthOnes = function (value: number | string) {
-  return moment(value).formater("YYYY-MM-01 00:00:00");
-};
-// 补全00:00:00
-export const addZero = function (value: number | string) {
-  return moment(value).formater("YYYY-MM-DD 00:00:00");
-};
-// 月数
-export const MonTime = function (value: number | string) {
-  return moment(value).formater("MM");
-};
-// 天数
-export const dayTime = function (value: number | string) {
-  return moment(value).formater("DD");
-};
-// 时分秒
-export const secondsTime = function (value: number | string) {
-  return moment(value).formater("HH:mm:ss");
-};
-
-export const secondShortTime = function (value: number | string) {
-  return moment(value).formater("HH:mm");
-};
+export default useDate;
