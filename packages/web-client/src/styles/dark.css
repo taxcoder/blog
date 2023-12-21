@@ -1,5 +1,5 @@
 .dark {
-  --page-light: 70%;
+  --page-light: 95%;
   background-color: #21252b;
   -webkit-filter: brightness(var(--page-light)); /* Chrome, Safari, Opera */
   filter: brightness(var(--page-light));
@@ -9,22 +9,9 @@
   background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, rgba(30, 30, 30) 35%) !important;
 }
 
-.dark .side-button {
-  --el-button-bg-color: #535353;
-}
-
 .dark #page-nav.active {
   background-color: rgba(0, 0, 0, 0.8) !important;
   box-shadow: 0 1px 1px #313131;
-}
-
-.dark #page-nav.bgColor {
-  box-shadow: none;
-}
-
-.dark #page-nav.add-filter {
-  filter: drop-shadow(0 1px 5px rgb(0, 0, 0)) !important;
-  -webkit-filter: drop-shadow(0 1px 5px rgb(0, 0, 0)) !important;
 }
 
 .dark #page-nav.active .title {
@@ -44,7 +31,7 @@
 .dark .article-breadcrumb,
 .dark .article-item-content {
   border: 1px solid #414243;
-  background-color: #1d1e1f !important;
+  background-color: #151515 !important;
 }
 
 .dark .article-content {
@@ -111,6 +98,9 @@
   color: #8b8b8b !important;
 }
 
+.dark .el-tree {
+  color: #a4a4a4 !important;
+}
 @media screen and (max-width: 800px) {
   .dark #essay {
     background: none !important;

@@ -1,12 +1,31 @@
+<!--
+ * @Author: tanxiang 1571922819@qq.com
+ * @Date: 2023-06-23 14:20:37
+ * @Description:
+ * @LastEditTime: 2023-12-02 20:52:43
+ * @LastEditors: tanxiang 1571922819@qq.com
+ * @FilePath: \blog\packages\web-client\src\components\page-footer\PageFooter.vue
+ * @copyright: Copyright (c) 2023 by 1571922819@qq.com, All Rights Reserved.
+-->
 <template>
-  <div id="page-footer" :class="widthAdaption">
-    <p>
-      <span>@{{ year }}{{ currentDate }} By {{ webSiteName }}</span>
-      <span>本站已运行 {{ time }}</span>
+  <div
+    id="page-footer"
+    class="w-full font-light text-[0.975rem] px-[45px] lg:pt-[60px] pt-[40px] pb-[10px] 2xl:mt-[85px] lg:mt-[70px] mt-0 mb-0 mx-auto box-border"
+  >
+    <p class="foot-p">
+      <span class="foot-span lg:text-left">@{{ getYear }}{{ getCurrentDate }} By {{ getWebSiteName }}</span>
+      <span class="foot-span lg:text-right">本站已运行{{ time }}</span>
     </p>
-    <p>
-      <span>浙公网安备 33032202000202号</span>
-      <span>湘ICP备2023005418号</span>
+    <p class="foot-p">
+      <span class="foot-span lg:text-left flex-center lg:important-justify-start">
+        <img :src="gongan" class="w-[16px] h-[16px]" alt="公安警徽" />
+        {{ getPublicSecurityRegistrationNumber }}
+      </span>
+      <span class="foot-span lg:text-right">
+        <a href="https://beian.miit.gov.cn/" target="_blank" class="text-black dark:text-white">
+          {{ getForTheRecord }}
+        </a>
+      </span>
     </p>
   </div>
 </template>
@@ -14,90 +33,38 @@
 <script setup lang="ts">
 import moment from 'moment';
 
-import { computed, ref, inject, onMounted, nextTick } from 'vue';
+import gongan from '@/assets/base64/gonggan';
 
-import { useBaseStore } from '@/stores/base';
 import { useGlobalStore } from '@/stores/global';
-//@ts-ignore
-import { useDate } from '@tanxiang/utils/index.ts';
+import { useDate } from '@tanxiang/utils';
 
-const base = useBaseStore();
 const global = useGlobalStore();
 const { headway } = useDate();
 
 const time = ref<string>('');
-const timer = ref<number | null>(null);
+const timer = ref<NodeJS.Timeout>();
 
-const screenWidth: any = inject('screenWidth');
-
-onMounted(() => {
-  nextTick(() => loopUpdateTime());
-});
+onMounted(() => nextTick(() => loopUpdateTime()));
 
 const loopUpdateTime = () => {
   timer.value = setInterval(() => {
     time.value = global.getWebSite ? headway(global.getWebSite.createTime) : '';
     // loopUpdateTime();
-  }, 1000 * 60);
+  }, 1000);
 };
-
-const currentDate = computed(() => {
+// 获取当前的时间
+const getCurrentDate = computed(() => {
   let ment = parseInt(moment().format('y'));
-  return ment - year.value <= 0 ? '' : '-' + ment;
+  return ment - getYear.value <= 0 ? '' : '-' + ment;
 });
-
-const webSiteName = computed(() => global.getWebSite.userName);
-
-const year = computed(() => new Date(global.getWebSite.createTime).getFullYear());
-
-const widthAdaption = computed(() => ({ active: screenWidth.value <= 600 }));
+// 获取网站名称
+const getWebSiteName = computed(() => global.getWebSite.userName);
+// 网站备案号
+const getForTheRecord = computed(() => global.getWebSite.forTheRecord);
+// 公安备案号
+const getPublicSecurityRegistrationNumber = computed(() => global.getWebSite.publicSecurityRegistrationNumber);
+// 获取当前年份
+const getYear = computed(() => new Date(global.getWebSite.createTime).getFullYear());
 </script>
 
-<style scoped>
-#page-footer {
-  width: 100%;
-  margin: 85px auto 0 auto;
-  font-weight: 300;
-  font-size: 0.975rem;
-  padding: 60px 60px 10px 60px;
-  box-sizing: border-box;
-}
-
-#page-footer.active {
-  padding-top: 40px;
-  margin-top: 0 !important;
-}
-
-#page-footer > p {
-  height: 2rem;
-  display: grid;
-  align-items: center;
-  grid-template-columns: 50% 50%;
-}
-
-#page-footer.active > p {
-  grid-template-columns: 100%;
-  grid-auto-rows: 50% 50%;
-  height: 50px;
-}
-
-#page-footer > p > span {
-  padding: 0 5px;
-  display: inline-block;
-}
-
-#page-footer.active > p > span {
-  text-align: center !important;
-  font-size: 0.95rem;
-}
-
-#page-footer > p > span:last-child {
-  text-align: right;
-}
-
-@media all and (max-width: 1200px) {
-  #page-footer {
-    margin-top: 70px !important;
-  }
-}
-</style>
+<style scoped></style>

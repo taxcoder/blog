@@ -13,6 +13,7 @@ dist
 dist-ssr
 coverage
 *.local
+./docker
 
 /cypress/videos/
 /cypress/screenshots/
@@ -26,3 +27,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+*.conf
+*.js

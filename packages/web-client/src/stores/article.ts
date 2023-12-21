@@ -7,7 +7,7 @@ export const useArticleStore = defineStore('article', {
   state: () => {
     return {
       articleList: {} as any,
-      pageSize: size,
+      pageSize: !size ? 0 : size,
       current: (!isNaN(parseFloat(current)) && isFinite(current) ? parseInt(current) : 1) as number,
       directory: [] as any[],
     };
@@ -16,7 +16,7 @@ export const useArticleStore = defineStore('article', {
     getArticleList(state) {
       return state.articleList;
     },
-    getPageSize(state) {
+    getPageSize(state): number {
       return state.pageSize;
     },
     getCurrent(state) {

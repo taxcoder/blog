@@ -2,7 +2,7 @@
   <div id="archived">
     <div id="archived-info">
       <div class="archived-all">文章总览：{{ size }}</div>
-      <div v-for="(item, index) in archived" :key="index" class="archived-info">
+      <div v-if="archived && archived.length > 0" v-for="(item, index) in archived" :key="index" class="archived-info">
         <!-- 年份 -->
         <div v-if="typeof item !== 'object'" class="archived-year">
           {{ item }}
@@ -38,17 +38,18 @@
           </el-container>
         </div>
       </div>
+      <div v-else class="archived-info">
+        <el-empty />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, ref, nextTick, onActivated } from 'vue';
-import { useArticle } from '@tanxiang/apis';
 import { useDate } from '@tanxiang/utils';
 
 import { Picture as IconPicture } from '@element-plus/icons-vue';
-import { useRouter } from 'vue-router';
+import { useArticle } from '@tanxiang/apis';
 import { useBaseStore } from '@/stores/base';
 
 const router = useRouter();
@@ -60,21 +61,21 @@ const size = ref<number>(0);
 const archived = ref<any>({});
 const oldData = ref<any[]>([]);
 
-const isDataLoading: any = inject('isDataLoading');
+const updateDataLoading: any = inject('updateDataLoading');
 
 onMounted(() => {
   article
     .archivedList()
     .then((success: any) => {
-      size.value = success.length;
-      oldData.value = success;
-      archived.value = formatRecord(success);
+      size.value = success.data.length;
+      oldData.value = success.data;
+      archived.value = formatRecord(success.data);
     })
     .catch((error: any) => {
       console.error(error);
     })
     .finally(() => {
-      nextTick(() => isDataLoading());
+      nextTick(() => updateDataLoading());
     });
 });
 
@@ -144,7 +145,7 @@ const articleInfo = (id: number) => {
 }
 
 #archived .archived-all {
-  font-family: 'round', sans-serif;
+  font-family: 'sakura', sans-serif;
   font-size: 1.6rem;
   padding-bottom: 5px;
 }
@@ -152,7 +153,7 @@ const articleInfo = (id: number) => {
 #archived .archived-year {
   font-size: 1.15rem;
   color: #000000;
-  font-family: 'round', sans-serif;
+  font-family: 'sakura', sans-serif;
 }
 
 #archived .archived-info {
@@ -186,7 +187,7 @@ const articleInfo = (id: number) => {
   font-size: 1rem;
   text-overflow: ellipsis;
   padding: 0 0 15px 0;
-  font-family: 'round', sans-serif;
+  font-family: 'sakura', sans-serif;
   font-weight: 700;
   cursor: pointer;
 }
@@ -196,7 +197,7 @@ const articleInfo = (id: number) => {
 }
 
 #archived .article-status .time {
-  font-family: 'round', sans-serif;
+  font-family: 'sakura', sans-serif;
   color: #676767;
 }
 

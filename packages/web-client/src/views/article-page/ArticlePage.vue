@@ -18,68 +18,68 @@
 </template>
 
 <script setup lang="ts">
+//@ts-ignore
 import { ArrowRight } from '@element-plus/icons-vue';
 
-import { computed, ref, onMounted, provide, inject, defineAsyncComponent, nextTick } from 'vue';
-
 import { useArticleStore } from '@/stores/article';
-import { useRouter } from 'vue-router';
 import { useArticle } from '@tanxiang/apis';
-import { useBaseStore } from '@/stores/base';
+import useMessage from '@/config/message';
 
 const ArticlePageContent = defineAsyncComponent(() => import('@/views/article-page/ArticlePageContent.vue'));
 
-const base: any = useBaseStore();
-const article: any = useArticleStore();
-const router: any = useRouter();
-const articleApi: any = useArticle();
-const isDataLoading: any = inject('isDataLoading');
-const screenWidth: any = inject('screenWidth');
-
-const articleData = ref<any>();
+const article = useArticleStore();
+const router = useRouter();
+const articleApi = useArticle();
+//@ts-ignore
+const updateDataLoading: Function = inject('updateDataLoading');
+const articleData = ref<any>({});
 const content = ref<string>('');
+
+const { errorMessage } = useMessage();
 
 provide('articleData', articleData);
 
-onMounted(() => {
-  queryInfo(article.getArticleList.records);
-});
+onMounted(() => queryInfo(article.getArticleList.records));
 
 const queryInfo = (isArraysEmpty: boolean) => {
-  if (!isArraysEmpty) queryArticleInfo();
-  else if (selectArticleId.value) queryArticleUrl();
+  if (!isArraysEmpty || !selectArticleId.value) queryArticleInfo();
+  else if (!!selectArticleId.value) queryArticleUrl();
 };
 
 const queryArticleInfo = () => {
   articleApi
-    .findArticleIdByInfo(router.currentRoute.value.params.id)
+    .findArticleInfoById(router.currentRoute.value.params.id)
     .then((success: any) => {
-      articleData.value = success;
+      articleData.value = success.data;
       // 当请求完成之后，再显示下面的内容
       queryArticleUrl();
     })
     .catch((error: any) => {
-      console.log(error);
+      let container: any = document.querySelectorAll('.data-container');
+      container.forEach((item: any) => item.classList.add('hidden'));
+      errorMessage(error, 750, () => {
+        router.replace('/list/article');
+        container.forEach((item: any) => item.classList.remove('hidden'));
+      });
     })
     .finally(() => {
-      nextTick(() => isDataLoading());
+      nextTick(() => updateDataLoading());
     });
 };
 
 const queryArticleUrl = () => {
   // 只请求url
   articleApi
-    .findArticleIdByUrl(router.currentRoute.value.params.id)
+    .findArticleContentById(router.currentRoute.value.params.id)
     .then((success: any) => {
-      if (!articleData.value) articleData.value = selectArticleId.value;
       // 返回文章的个数
-      content.value = success;
+
+      content.value = success.data.replace(/^# .*([\s\S]*?)(\r?\n\s*\r?\n)?/, '');
+      if (!articleData.value.id) articleData.value = selectArticleId.value;
     })
-    .catch((error: any) => {
-      console.log(error);
-    })
+    .catch((error: any) => console.log(error))
     .finally(() => {
-      nextTick(() => isDataLoading());
+      nextTick(() => updateDataLoading());
     });
 };
 
@@ -87,7 +87,9 @@ const queryArticleUrl = () => {
  * 如果是从首页点击进入的，会传递文章数组，从数组内查询到当前文章信息
  */
 const selectArticleId = computed(() => {
-  return article.getArticleList.records.find((record: any) => record.id == router.currentRoute.value.params.id);
+  return article.getArticleList.records && article.getArticleList.records.length > 0
+    ? article.getArticleList.records.find((record: any) => record.id == router.currentRoute.value.params.id)
+    : null;
 });
 </script>
 

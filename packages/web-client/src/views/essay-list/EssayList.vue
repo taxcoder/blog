@@ -1,28 +1,47 @@
 <template>
   <div id="essay">
     <div class="essay-list">
-      <div v-for="item in essayList.records" class="essay-card" :key="item.id">
+      <div
+        v-if="essayList.records && essayList.records.length > 0"
+        v-for="item in essayList.records"
+        class="essay-card"
+        :key="item.id"
+      >
         <i class="weather" :class="`qi-${item['weather']}`" />
         <el-card>
           <div class="essay-info_top">
-            <span style="position: relative; top: -2px; font-size: 0.875rem">{{ item['mood'] }}</span>
+            <span class="relative top-0 text-[0.875rem]">{{ item['mood'] }}</span>
             <span class="create-time">{{ day.chineseTime(item['createTime']) }}</span>
           </div>
           <p class="content-word" v-html="item.content" />
           <div class="essay-info_bottom">
-            <span style="vertical-align: baseline">🌷</span>
-            <span class="temperature">
-              <el-tooltip effect="dark" content="气温" placement="right">
-                {{ item['temperature'] + '℃' }}
-              </el-tooltip>
-            </span>
+            <div class="flex flex-row">
+              <span class="align-baseline relative top-0 text-[16px]">🌷</span>
+              <span class="temperature">
+                <el-tooltip effect="dark" content="气温" placement="right">
+                  {{ item['temperature'] }}
+                </el-tooltip>
+              </span>
+              <span class="relative top-0 ml-[1px] text-[0.835rem] text-[#db7e8c] flex items-center">℃</span>
+            </div>
+
+            <div class="ml-[7px] w-full flex flex-row items-center text-[#db7e8c]">
+              <city-address class="relative text-[18px] w-[19px]" />
+              <span class="ml-[2px]">{{ item['province'] }}</span>
+            </div>
+
             <div class="heart">
-              <i v-if="isLike(item.id)" class="iconfont icon-heart-3-line" @click="pushLike(item.id)" />
+              <i v-if="isLike(item.id)" class="iconfont icon-heart-3-line text-[17px]" @click="pushLike(item.id)" />
               <n-spin v-else-if="loading.indexOf(item.id) !== -1" :size="13" class="like-spin" />
-              <i v-else class="iconfont icon-heart-3-fill" @click="openWarning" />
+              <i v-else class="iconfont icon-heart-3-fill text-[17px]" @click="openWarning" />
               <span class="like-temperature" v-show="item['likeCount'] !== 0">{{ item['likeCount'] }}</span>
             </div>
           </div>
+        </el-card>
+      </div>
+      <div v-else class="essay-card">
+        <el-card>
+          <el-empty :image-size="300" />
         </el-card>
       </div>
     </div>
@@ -40,13 +59,12 @@
 </template>
 
 <script setup lang="ts">
-import { ElNotification } from 'element-plus';
-import { computed, inject, nextTick, onActivated, onMounted, ref } from 'vue';
+import { useBaseStore } from '@/stores/base';
+import { useEssayStore } from '@/stores/essay';
 import { useEssay } from '@tanxiang/apis';
 import { useDate, usePage } from '@tanxiang/utils';
-import { useEssayStore } from '@/stores/essay';
-import FormatPaging from '@/components/format-paging/FormatPaging.vue';
-import { useBaseStore } from '@/stores/base';
+import { ElNotification, ElMessage as message } from 'element-plus';
+import CityAddress from '@/components/icon-svg/CityAddress.vue';
 
 let day = useDate();
 let page = usePage();
@@ -54,13 +72,12 @@ let essay = useEssay();
 
 let base = useBaseStore();
 let essayStore = useEssayStore();
-const scrollBar: any = inject('scrollBar');
 
 const total = ref<number>(0);
 const current = ref<number>(1);
 const loading = ref<any[]>([]);
 const essayList = ref<any>({});
-const isDataLoading: any = inject('isDataLoading');
+const updateDataLoading: any = inject('updateDataLoading');
 
 onMounted(() => {
   getEssayData(1, 20);
@@ -74,15 +91,28 @@ const pushLike = (id: number) => {
       essayStore.setLikes(id);
       essayList.value.records.map((list: any) => {
         if (list.id !== id) return list;
-        list.likeCount = success;
+        list.likeCount = success.data;
         return list;
       });
-      nextTick(isDataLoading());
+      ElNotification({
+        message: '点赞成功！',
+        type: 'success',
+        duration: 2000,
+        position: 'bottom-left',
+      });
+      nextTick(updateDataLoading());
     })
-    .catch((error: any) => console.log(error))
+    .catch((error: any) => {
+      ElNotification({
+        message: !error || error.name ? '点赞失败！' : error,
+        type: 'error',
+        duration: 2000,
+        position: 'bottom-left',
+      });
+    })
     .finally(() => {
       loading.value.splice(loading.value.indexOf(id), 1);
-      nextTick(() => isDataLoading());
+      nextTick(() => updateDataLoading());
     });
 };
 
@@ -99,14 +129,12 @@ const getEssayData = (cur: number, size: number) => {
   essay
     .essayList(cur, size)
     .then((success: any) => {
-      essayList.value = success;
-      total.value = success.total;
-      current.value = success.current;
-      nextTick(isDataLoading());
+      essayList.value = success.data;
+      total.value = success.data.total;
+      current.value = success.data.current + 1;
+      nextTick(updateDataLoading());
     })
-    .catch((error: any) => {
-      console.log(error);
-    });
+    .catch((error: any) => message.error(!error || error.name ? '随笔获取失败！' : error));
 };
 
 const currentChange = ({ current, size }: { current: number; size: number }) => {
@@ -165,15 +193,13 @@ const isLike = computed(() => (id: any) => {
 
 .essay-info_bottom .heart {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  width: 96%;
-  justify-content: end;
-  height: 19px;
 }
 
 .content-word {
   color: #0c1932;
-  font-size: 0.85rem;
+  font-size: 0.925rem;
   word-break: break-all;
   letter-spacing: 1px;
   background-image: url('@/assets/images/wordline.webp');
@@ -189,16 +215,17 @@ const isLike = computed(() => (id: any) => {
 }
 
 #essay .temperature {
-  margin-left: 4px;
+  margin-left: 2px;
   color: #db7e8c;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
 }
 
 #essay .heart .like-temperature {
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   margin-left: 4px;
   color: #626262;
-  font-family: 'round', sans-serif;
 }
 
 #essay .heart .like-spin {
@@ -210,7 +237,7 @@ const isLike = computed(() => (id: any) => {
   color: red;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 500px) {
   #essay {
     padding: 0;
     background: none;

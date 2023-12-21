@@ -1,13 +1,19 @@
 <template>
   <user-container title="人生进度条" iconClass="icon-countDown" :size="22">
     <template v-slot:content>
-      <div v-for="(item, index) in process" :key="index">
-        <el-text class="text-style" size="small" tag="p" type="info" v-html="currentDate(index)" />
+      <div v-for="(item, index) in process" :key="index" class="last-of-type:pb-[8px]">
+        <el-text
+          class="box-border important-pt-[12px] important-pb-[3px] px-0"
+          size="small"
+          tag="p"
+          type="info"
+          v-html="getCurrentDate(index)"
+        />
         <el-progress
           :color="item['color']"
           :duration="3"
           :indeterminate="true"
-          :percentage="currentProcess(index)"
+          :percentage="getCurrentProcess(index)"
           :stroke-width="13"
           striped
           striped-flow
@@ -18,63 +24,46 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, computed } from 'vue';
 import moment from 'moment';
-import UserContainer from '@/components/user-info/UserContainer.vue';
 
+const time = ref<number>(1000 * 60 * 60);
 const hour = ref<string>(moment().format('H'));
 const week = ref<string>(moment().format('d'));
 const day = ref<string>(moment().format('D'));
 const month = ref<string>(moment().format('M'));
-
+// 进度条样式
 const process = reactive([{ color: '' }, { color: '#e6a23c' }, { color: '#f56c6c' }, { color: '#13ce66' }]);
 
-onMounted(() => newDate());
-const newDate = () => {
-  setTimeout(() => {
+onMounted(() => setNewDate());
+// 设置新日期
+const setNewDate = () => {
+  setInterval(() => {
     hour.value = moment().format('H');
     week.value = moment().format('d');
     day.value = moment().format('D');
     month.value = moment().format('M');
-  }, 1000 * 60 * 60);
+  }, time.value);
 };
-
-const currentDate = computed(() => (index: number) => {
-  let sBefore = '<span style="color: #409eff;">';
-  let sLast = '</span>';
-  switch (index) {
-    case 0:
-      return '今日已经过去 ' + sBefore + hour.value + sLast + ' 小时';
-    case 1:
-      return '这周已经过去 ' + sBefore + (week.value === '0' ? 7 : week.value) + sLast + ' 天';
-    case 2:
-      return '本月已经过去 ' + sBefore + day.value + sLast + ' 天';
-    case 3:
-      return '今年已经过去 ' + sBefore + month.value + sLast + ' 个月';
-  }
-});
-
-const currentProcess = computed(() => (index: number) => {
-  switch (index) {
-    case 0:
-      return Math.ceil((100 / 24) * parseInt(hour.value));
-    case 1:
-      return week.value === '0' ? 100 : Math.ceil((100 / 7) * parseInt(week.value));
-    case 2:
-      return Math.ceil((100 / moment().daysInMonth()) * parseInt(day.value));
-    case 3:
-      return Math.ceil((100 / 12) * parseInt(month.value));
-  }
-});
+// 获取当前日期
+const getCurrentDate = computed(
+  () => (index: number) =>
+    ({
+      0: () => `今日已经过去<span style="color: #409eff;">${hour.value}</span>小时`,
+      1: () => `这周已经过去<span style="color: #409eff;">${week.value === '0' ? 7 : week.value}</span>天`,
+      2: () => `本月已经过去<span style="color: #409eff;">${day.value}</span>天`,
+      3: () => `今年已经过去<span style="color: #409eff;">${month.value}</span>个月`,
+    }[index]())
+);
+// 获取当前进度
+const getCurrentProcess = computed(
+  () => (index: number) =>
+    ({
+      0: Math.ceil((100 / 24) * parseInt(hour.value)),
+      1: week.value === '0' ? 100 : Math.ceil((100 / 7) * parseInt(week.value)),
+      2: Math.ceil((100 / moment().daysInMonth()) * parseInt(day.value)),
+      3: Math.ceil((100 / 12) * parseInt(month.value)),
+    }[index])
+);
 </script>
 
-<style scoped>
-.countdown {
-  width: 24px;
-}
-
-.text-style {
-  box-sizing: border-box;
-  padding: 12px 0 3px 0;
-}
-</style>
+<style scoped></style>

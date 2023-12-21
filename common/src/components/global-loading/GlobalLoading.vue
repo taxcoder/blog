@@ -8,12 +8,32 @@
  * @copyright: Copyright (c) 2023 by 1571922819@qq.com, All Rights Reserved.
 -->
 <template>
-  <div class="loader"></div>
+  <div
+    class="page-loading top-0 left-0 fixed flex-center z-9999 w-full h-full"
+    :class="{ 'loading-hidden': props.hiddenLoading }"
+  >
+    <div class="loader"></div>
+  </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const props = defineProps({
+  hiddenLoading: { type: Boolean, default: true },
+});
+</script>
 
 <style scoped lang="css">
+.page-loading {
+  background-image: linear-gradient(
+    120deg,
+    rgba(252, 203, 144, 0.4) 0%,
+    rgba(213, 126, 235, 0.4) 100%
+  );
+  opacity: 1;
+  z-index: 9999;
+  transition: opacity 0.15s linear, z-index 0.15s linear;
+}
+
 .loader {
   width: 35px;
   height: 80px;
@@ -38,6 +58,12 @@
   background: #eb6b3e;
   transform-origin: bottom;
   transform: rotate(8deg);
+}
+
+.loading-hidden {
+  opacity: 0;
+  z-index: -9999;
+  /*animation: pageHidden 0.4s linear forwards;*/
 }
 
 @keyframes loading {

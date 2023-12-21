@@ -1,5 +1,5 @@
+//@ts-nocheck
 import 'md-editor-v3/lib/preview.css';
-
 import { config } from 'md-editor-v3';
 
 import screenfull from 'screenfull';

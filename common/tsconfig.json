@@ -10,6 +10,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    // 是否不生成打包后的 JavaScript 文件
+    "noEmit": true,
     // 是否移除编译后的 JavaScript 文件的注释
     "removeComments": true
   },

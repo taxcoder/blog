@@ -1,3 +1,12 @@
+<!--
+ * @Author: tanxiang 1571922819@qq.com
+ * @Date: 2023-09-10 21:15:30
+ * @Description:
+ * @LastEditTime: 2023-12-01 20:34:46
+ * @LastEditors: tanxiang 1571922819@qq.com
+ * @FilePath: \blog\packages\manage-client\src\App.vue
+ * @copyright: Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+-->
 <template>
   <a-config-provider
     :locale="zhCN"
@@ -33,24 +42,64 @@
         Checkbox: {
           borderRadiusSM: 4,
         },
+        Card: {
+          borderRadiusLG: 8,
+          paddingLG: 14,
+          marginXS: 0,
+        },
+        Drawer: {
+          paddingLG: 0,
+        },
       },
     }"
   >
-    <inlet />
+    <global-loading :hidden-loading="!base.getLoading"></global-loading>
+    <div v-if="!base.getLoading" class="h-full">
+      <inlet v-if="juiceIsLogin" />
+      <router-view v-else name="login"></router-view>
+    </div>
   </a-config-provider>
 </template>
 <script setup lang="ts">
-import Inlet from '@/components/Inlet.vue';
-import { onMounted } from 'vue';
-import { useBaseStore } from '@/stores/base';
 import { Data } from '@/config';
+import { useBaseStore } from '@/stores/base';
+import { usePage } from '@tanxiang/utils';
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
+import { messageError } from '@/config/message';
+import { useAuthWebStation } from '@tanxiang/apis';
+import { GlobalLoading } from '@tanxiang/common/index.ts';
+
+const Inlet = defineAsyncComponent(() => import('@/views/Inlet.vue'));
 
 const base: any = useBaseStore();
+const auth = useAuthWebStation();
 
-onMounted(() => {
-  base.setBreakpoint(window.innerWidth <= Data.changeWidth);
+const router = useRouter();
+
+onBeforeMount(() => {
+  // 如果没有token，则跳转到登录页面
+  if (!localStorage.getItem('token')) return;
+  // 否则去获取用户信息，如果token验证失败了，则表示token异常，跳转到登录页，否则进入系统
+  base.setLoading(true);
+  auth
+    .webStationInfo()
+    .then((success: any) => {
+      base.setWebStation(success.data);
+      base.setIsSuccess(true);
+      router.replace('/analysis');
+    })
+    .catch((error: any) => {
+      messageError(!error || error.name ? '网络错误！' : error);
+      localStorage.removeItem('token');
+      base.setIsLogin(false);
+      router.replace('/login');
+    })
+    .finally(() => base.setLoading(false));
 });
+
+onMounted(() => base.setBreakpoint(usePage().realWidth() <= Data.changeWidth));
+
+const juiceIsLogin = computed(() => !!base.getIsLogin && base.getIsSuccess);
 </script>
 
-<style scoped></style>
+<style></style>

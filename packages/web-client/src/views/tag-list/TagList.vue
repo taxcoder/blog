@@ -1,47 +1,65 @@
 <template>
   <div id="tag">
-    <div class="tag-count-all">标签总览：101</div>
+    <div class="tag-count-all">{{ `标签总览：${tagList.length}` }}</div>
     <div class="tag-list-data">
-      <div v-for="tag in tagList" :key="tag.id" class="tag-info" @click="jump(tag.id)">
-        <n-icon :size="15"><TagSharp /></n-icon>
+      <div
+        v-if="tagList && tagList.length > 0"
+        v-for="tag in tagList"
+        :key="tag.id"
+        class="tag-info"
+        @click="jump(tag.id)"
+      >
+        <n-icon :size="15">
+          <TagSharp />
+        </n-icon>
         <span class="tag-name">{{ tag.name }}</span>
-        <span class="tag-count">11</span>
+        <span class="tag-count">{{ tag['articleCount'] }}</span>
+      </div>
+      <div v-else>
+        <el-empty></el-empty>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, nextTick, onActivated } from 'vue';
 import { useTag } from '@tanxiang/apis';
-import { useRouter } from 'vue-router';
 
-import { TagSharp } from '@vicons/material';
-import { useBaseStore } from '@/stores/base';
+import useMessage from '@/config/message';
+
+import { useGlobalStore } from '@/stores/global';
+import TagSharp from '@/components/icon-svg/TagSharp.vue';
 
 const router = useRouter();
 
 const { tags } = useTag();
-
-const base = useBaseStore();
-const isDataLoading: any = inject('isDataLoading');
+const { errorMessage } = useMessage();
+const global = useGlobalStore();
+const updateDataLoading: any = inject('updateDataLoading');
 
 const tagList = ref<any[]>([]);
 
 onMounted(() => {
-  tags()
-    .then((success: any) => {
-      tagList.value = success;
-    })
-    .catch((error: any) => {
-      console.log(error);
-    })
-    .finally(() => {
-      nextTick(() => isDataLoading());
-    });
+  if (global.getWebSite.tags) {
+    tagList.value = global.getWebSite.tags;
+    nextTick(() => updateDataLoading());
+  } else {
+    tags()
+      .then((success: any) => global.setWebSiteTags(success.data))
+      .catch((error: any) => errorMessage(error ? error.message : '获取标签失败'))
+      .finally(() => {
+        nextTick(() => updateDataLoading());
+      });
+  }
 });
 
 const jump = (tagId: string | number) => router.push(`/list/tag/${tagId}`);
+
+watch(
+  () => global.getWebSite.tags,
+  (newTags: any) => (tagList.value = newTags),
+  { deep: true }
+);
 </script>
 
 <style scoped>
@@ -50,7 +68,7 @@ const jump = (tagId: string | number) => router.push(`/list/tag/${tagId}`);
   border-radius: 10px;
   width: 100%;
   min-height: 200px;
-  font-family: 'round', sans-serif;
+  font-family: 'sakura', sans-serif;
   box-sizing: border-box;
   padding: 30px 30px 20px 30px;
   max-width: 900px;
@@ -89,7 +107,7 @@ const jump = (tagId: string | number) => router.push(`/list/tag/${tagId}`);
 
 .tag-info .tag-name {
   font-size: 0.85rem;
-  font-family: 'round', sans-serif;
+  font-family: 'sakura', sans-serif;
   padding: 0 5px;
 }
 
@@ -98,6 +116,7 @@ const jump = (tagId: string | number) => router.push(`/list/tag/${tagId}`);
   transform: scale(1.1);
   background-color: #409eff;
 }
+
 .tag-info:hover .tag-count {
   background-color: white;
   color: #409eff;

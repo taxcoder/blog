@@ -1,4 +1,4 @@
 export default {
-  BASE_URL: 'http://localhost:7070',
+  BASE_URL: '',
   TIME_OUT: 1000 * 10,
 };

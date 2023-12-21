@@ -11,11 +11,12 @@
   </el-input>
 </template>
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { Search } from '@element-plus/icons-vue';
+import { useGlobalStore } from '@/stores/global';
+
+const global = useGlobalStore();
 
 let input = ref('');
-
 let isLoading = ref(false);
 
 const search = () => {
@@ -25,6 +26,7 @@ const search = () => {
 watch(
   () => input.value,
   (newValue: string) => {
+    global.setSearchInput(newValue);
     isLoading.value = newValue.length !== 0;
   }
 );

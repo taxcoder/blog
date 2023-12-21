@@ -1,7 +1,7 @@
 <template>
   <div id="article-page-content">
-    <div class="item-info">
-      <el-image style="width: 100%; height: 275px; filter: brightness(0.9)" :src="articleData?.image" fit="cover" />
+    <div class="item-info mt-[15px]">
+      <el-image class="w-full h-[275px]" style="filter: brightness(0.9)" :src="articleData?.image" fit="cover" />
       <span class="classification-name" @click="jump">
         {{ classificationName }}
       </span>
@@ -27,11 +27,9 @@
 
 <script setup lang="ts">
 import { useDate } from '@tanxiang/utils';
-import { inject, computed, reactive } from 'vue';
 //@ts-ignore
 import { MdPreview } from 'md-editor-v3';
 
-import { useRouter } from 'vue-router';
 import { useArticleStore } from '@/stores/article';
 import { useBaseStore } from '@/stores/base';
 
@@ -75,7 +73,10 @@ const props = defineProps({
 
 const articleData: any = inject('articleData');
 
-const onGetCatalog = (list: any[]) => article.setDirectory(list);
+const onGetCatalog = (list: any[]) => {
+  if (list[0] && list[0].level === 1) list.shift();
+  article.setDirectory(list);
+};
 
 const info = computed(() => (index: number) => {
   switch (index) {
@@ -101,7 +102,9 @@ const title = computed(() => {
   return articleData.value ? articleData.value.title : '';
 });
 const author = computed(() => (articleData.value ? articleData.value.author : ''));
-const classificationName = computed(() => (articleData.value ? articleData.value.classification.name : ''));
+const classificationName = computed(() => {
+  return !!articleData.value && !!articleData.value.classification ? articleData.value.classification.name : '';
+});
 const time = computed(() => (t: any) => articleData.value ? util.shortTime(articleData.value[t], '/') : '');
 
 const readTime = (fontCont: number, imageCount: number) => fontCont / (500 + imageCount * 5);
@@ -136,14 +139,14 @@ const readTime = (fontCont: number, imageCount: number) => fontCont / (500 + ima
   justify-content: center;
   margin: 30px 0;
   font-size: max(1.5vw, 1.2rem);
-  font-family: 'round', sans-serif;
+  font-family: 'sakura', sans-serif;
 }
 
 .item-info-options {
   position: relative;
   display: flex;
   align-items: center;
-  font-family: 'round', sans-serif;
+  font-family: 'sakura', sans-serif;
   font-size: max(0.8vw, 0.6rem);
 }
 

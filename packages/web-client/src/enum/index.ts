@@ -1,4 +1,6 @@
 export enum routeName {
   home = '首页',
-  article = '文章',
+  essay = '随笔',
+  archived = '归档',
+  tag = '标签',
 }

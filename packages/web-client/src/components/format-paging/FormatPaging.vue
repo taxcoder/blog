@@ -1,7 +1,7 @@
 <template>
-  <div id="page">
+  <div id="page" class="mt-[40px] mb-[10px]">
     <el-pagination
-      v-if="isSmallWidth"
+      v-if="juiceIsSmallWidth"
       :page-size="pageSize"
       :current-page="current"
       @currentChange="currentChange"
@@ -28,15 +28,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
 import { useArticleStore } from '@/stores/article';
 
 const currentPage = ref<number>(1);
-
 const article = useArticleStore();
 
 const props = defineProps({
-  screenWidth: { type: Number, default: 0 },
+  widthScreen: { type: Number, default: 0 },
   pageSize: { type: Number, required: true },
   pageSizes: { type: Array, default: () => [6, 10] },
   current: { type: Number, required: true },
@@ -47,17 +45,12 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['sizeChange', 'currentChange']);
-
-const sizeChange = (size: number) => {
-  emit('sizeChange', { current: props.current, size: size });
-};
-
-const currentChange = (current: number) => {
-  emit('currentChange', { current: current, size: props.pageSize });
-};
-
+// 变更每页显示的数量
+const sizeChange = (size: number) => emit('sizeChange', { current: props.current, size: size });
+// 变更当前页
+const currentChange = (current: number) => emit('currentChange', { current: current, size: props.pageSize });
 // 小于860的宽度，将多余的功能清除
-const isSmallWidth = computed(() => props.screenWidth <= 860);
+const juiceIsSmallWidth = computed(() => props.widthScreen <= 860);
 // 小于600的宽度，直接算移动端
 const getTotal = computed(() => (article.getArticleList.total ? article.getArticleList.total : 0));
 watch(
@@ -66,9 +59,4 @@ watch(
 );
 </script>
 
-<style scoped>
-#page {
-  margin-top: 40px;
-  margin-bottom: 10px;
-}
-</style>
+<style scoped></style>

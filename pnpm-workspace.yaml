@@ -1,11 +1,9 @@
 packages:
   # all packages in direct subdirs of packages/
   - 'packages/*'
-  # all packages in subdirs of components/
-  - 'components/**'
-  # exclude packages that are inside test directories
-  - '!**/test/**'
-  # 加入工作空间的包
+  # 公共的组件
+  - 'common/**'
+  # 后端请求文件
   - 'apis/**'
-  # 加入工作空间的包
+  # 通用的工具包
   - 'utils/**'

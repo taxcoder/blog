@@ -3,3 +3,6 @@ declare module '*.vue' {
   const component: ComponentOptions;
   export default component;
 }
+
+declare module '@tanxiang/utils';
+declare module '@tanxiang/apis';

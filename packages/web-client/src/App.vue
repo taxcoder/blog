@@ -1,231 +1,181 @@
+<!--
+ * @Author: tanxiang 1571922819@qq.com
+ * @Date: 2023-06-10 14:11:50
+ * @Description:
+ * @LastEditTime: 2023-12-02 16:25:49
+ * @LastEditors: tanxiang 1571922819@qq.com
+ * @FilePath: \blog\packages\web-client\src\App.vue
+ * @copyright: Copyright (c) 2023 by 1571922819@qq.com, All Rights Reserved.
+-->
+
 <template>
-  <div v-show="getListShow" class="app-node">
-    <el-config-provider :locale="locale">
-      <n-scrollbar
-        :key="route.name"
-        ref="scrollBar"
-        :style="{ height: '100%' }"
-        @scroll="scroll"
-        id="scroll-bar"
-        trigger="none"
-        :size="60"
-      >
-        <home-page :title="base.getTitle" />
-        <!-- 专用于滚动 -->
-        <div id="start" />
-        <div v-show="show" class="content-active">
-          <content-main :position="userInfoPosition" :show-user-info="showUserInfo" :isDraw="isDraw">
-            <router-view />
-          </content-main>
-          <side-pendant />
-          <side-drawer />
-          <page-footer v-if="show" />
-        </div>
-      </n-scrollbar>
+  <div v-show="juiceCanShowContainer" class="w-full h-full">
+    <el-config-provider :locale="getLocale">
+      <home-page :title="getTitle" />
+      <!-- 专用于滚动 -->
+      <div id="start" />
+      <div v-show="juiceCanShowContent" class="data-container">
+        <content-main :position="juicePosition" :show-user-info="juiceUserInfo" :isDraw="juiceIsDraw">
+          <router-view />
+        </content-main>
+        <side-pendant />
+        <side-drawer />
+        <page-footer v-if="juiceCanShowContent" class="data-container" />
+      </div>
     </el-config-provider>
   </div>
-  <div class="app-node page-loading" :class="{ 'loading-hidden': getListShow }">
-    <global-loading />
-  </div>
+  <global-loading :hidden-loading="juiceCanShowContainer" />
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useArticleStore } from '@/stores/article';
 import { useBaseStore } from '@/stores/base';
 import { useGlobalStore } from '@/stores/global';
-import { useArticleStore } from '@/stores/article';
 
-import { useDark, useToggle } from '@vueuse/core';
-
-import SideDrawer from '@/components/side-drawer/SideDrawer.vue';
-import { init } from '@tanxiang/apis';
-import PageFooter from '@/components/page-footer/PageFooter.vue';
-import SidePendant from '@/components/side-pendant/SidePendant.vue';
-import ContentMain from '@/components/ContentMain.vue';
-import HomePage from '@/components/home-page/HomePage.vue';
 import { pagingCount } from '@/config';
-//@ts-ignore
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
+import { Status } from '@/interface/base';
+import { init } from '@tanxiang/apis';
+import { GlobalLoading } from '@tanxiang/common';
 //@ts-ignore
 import en from 'element-plus/dist/locale/en.mjs';
+//@ts-ignore
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 
-import { NScrollbar } from 'naive-ui';
-import GlobalLoading from '@/common/global-loading/GlobalLoading.vue';
+const ContentMain = defineAsyncComponent(() => import('@/components/ContentMain.vue'));
+const HomePage = defineAsyncComponent(() => import('@/components/home-page/HomePage.vue'));
 
 const route = useRoute();
 const base = useBaseStore();
 const global = useGlobalStore();
 const article = useArticleStore();
 
-const scrollBar = ref();
-
-const loadingTimer = ref<number | null>(null);
-const currentTheme = ref<number>(-1);
+// 全局loading的状态
+const loadingTimer = ref<NodeJS.Timeout>();
+// 侧边按钮的状态，让页面在滚动时，侧边按钮不会回弹到页面外，如果为null，则表示没有在滚动
+const timer = ref<NodeJS.Timeout>();
+// 用于解决切换主题导致的滚动异常，如果是-1，则表示是第一次滚动
+const themeCurrent = ref<number>(-1);
+// 设置组件的显示语言
 const language = ref<string>('zh-cn');
-const timer = ref<number | null>(null);
-const scrollHeight = ref<number>(-1);
+// 页面背景图的高度
 const imgHeight = ref<number>(-1);
+// 当前的主题
 const theme = ref<boolean>(false);
-
-const screenWidth = ref<number>(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
-const screenHeight = ref<number>(
-  window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-);
-
-const scrollStatus = reactive({
-  prev: 0,
-  current: 0,
+// 当前滚动的状态，存储着当前距离顶部的距离和上一次滚动距离顶部的距离
+const status = reactive<Status>({
+  scroll: 0,
+  // 窗口的宽度，随着页面的拉伸也会变化
+  width: 0,
+  // 窗口的高度，随着页面的拉伸也会变化
+  height: 0,
 });
 
-provide('scrollBar', scrollBar);
+provide('status', status);
 provide('imgHeight', imgHeight);
-provide('screenWidth', screenWidth);
-provide('screenHeight', screenHeight);
-provide('scrollStatus', scrollStatus);
-provide('scrollHeight', scrollHeight);
-provide('isDataLoading', () => {
-  if (loadingTimer.value) {
-    clearTimeout(loadingTimer.value);
-  }
-  loadingTimer.value = setTimeout(() => base.setIsLoadingShow(true), 1000);
+
+// 当数据加载完成，调用此方法可以关闭加载状态
+provide('updateDataLoading', (timeout = 750) => {
+  if (loadingTimer.value) clearTimeout(loadingTimer.value);
+  loadingTimer.value = setTimeout(() => base.setIsLoadingShow(true), timeout);
 });
 
 onMounted(() => {
-  configInit();
   themeInit();
-  addResize();
-  webSiteInit();
-});
+  configInit();
 
-const webSiteInit = () => {
+  webSiteInit((success: any) => {
+    success.data.text = success.text.data;
+    success.data.count = success.count.data;
+    global.setWebSite(success.data);
+  });
+
+  addListenerResize((e: any) => {
+    // 每当窗口的大小发生变化时，获取到当前的宽度和高度，重新进行赋值
+    status.width = e.currentTarget.innerWidth;
+    status.height = e.currentTarget.innerHeight;
+  });
+
+  addListenerScroll(() => (status.scroll = document.documentElement.scrollTop));
+
+  status.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  status.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+});
+// 获取网站信息
+const webSiteInit = (fn: Function) => {
   init()
-    .then((success: any) => global.setWebSite(success))
+    .then((success: any) => fn(success))
     .catch((error: any) => {
       // 提示网站异常
       console.error(error);
     });
 };
-
+// 初始化主题
 const themeInit = () => useToggle(useDark({ storageKey: 'theme', valueDark: 'dark', valueLight: 'light' }));
-
+// 初始化配置
 const configInit = () => {
   if (!pagingCount.includes(article.getPageSize)) article.setPageSize(pagingCount[0]);
 };
-
-const addResize = () => window.addEventListener('resize', resize, { passive: false });
-
-// 每当窗口的大小发生变化时，获取到当前的宽度和高度，重新进行赋值
-const resize = function (event: any) {
-  screenWidth.value = event.currentTarget['innerWidth'];
-  screenHeight.value = event.currentTarget['innerHeight'];
+// 监听窗口的大小变化
+const addListenerResize = (fn: Function) => {
+  window.addEventListener('resize', (e: any) => fn(e), { passive: false });
 };
 
-const scroll = (event: any) => {
-  let flag = base.getTheme ? 1 : 0;
-  // 第一次进来，将当前的主题保存
-  if (currentTheme.value === -1) currentTheme.value = flag;
-  else if (flag !== currentTheme.value) {
-    // 如果后面进来了，主题不匹配，则表示是由于切换主题导致的滚动，直接取消执行
-    currentTheme.value = flag;
-    return;
-  }
+const addListenerScroll = (fn: Function) => {
+  window.addEventListener('scroll', (e: any) => {
+    let flag = base.getTheme ? 1 : 0;
+    // 第一次进来，将当前的主题保存
+    if (themeCurrent.value === -1) themeCurrent.value = flag;
+    else if (flag !== themeCurrent.value) {
+      // 如果后面进来了，主题不匹配，则表示是由于切换主题导致的滚动，直接取消执行
+      themeCurrent.value = flag;
+      return;
+    }
+    if (timer.value) {
+      clearTimeout(timer.value);
+      global.setIsContract(true);
+    }
 
-  if (timer.value) {
-    clearTimeout(timer.value);
-    global.setIsContract(true);
-  }
-
-  timer.value = setTimeout(() => {
-    global.setIsContract(false);
-  }, 650);
-
-  scrollStatus.prev = scrollStatus.current;
-  scrollStatus.current = event.target.scrollTop;
+    timer.value = setTimeout(() => global.setIsContract(false), 650);
+    fn();
+  });
 };
-
-const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en));
-
-const show = computed(() => {
-  return global.getWebSite.id && base.getIsLoadingShow;
-});
-
-const getListShow = computed(() => {
-  return base.getIsLoadingShow;
-});
-
-const showUserInfo = computed(() => {
-  return route.meta.showUserInfo;
-});
-
-const isDraw = computed(() => {
-  return route.meta.isDraw;
-});
-
-const userInfoPosition = computed(() => (route.meta.position === undefined ? true : route.meta.position));
-
+// 获取当前的语言
+const getLocale = computed(() => (language.value === 'zh-cn' ? zhCn : en));
+// 判断content内容部分是否可以显示
+const juiceCanShowContent = computed(() => global.getWebSite.id && base.getIsLoadingShow);
+// 判断container内容部分是否可以显示
+const juiceCanShowContainer = computed(() => base.getIsLoadingShow);
+// 判断是否显示用户信息
+const juiceUserInfo = computed((): boolean => ![void 0, false].includes(getMeta.value.showUserInfo));
+// 设置边栏的值，如果为true，则表示边栏的宽度为0
+const juiceIsDraw = computed(() => getMeta.value.isDraw);
+// 判断用户信息是在左边显示还是再右边显示，true在右边，false在左边
+const juicePosition = computed(() => ([void 0].includes(getMeta.value.position) ? true : getMeta.value.position));
+// 网站标题
+const getTitle = computed((): string => (!base.getTitle ? '' : base.getTitle));
+const getMeta = computed((): any => route.meta);
 // 监听主题模式的变化
 watch(
   () => base.getTheme,
-  (newValue) => {
-    localStorage.setItem('theme', newValue ? 'dark' : 'light');
-    document.getElementsByTagName('html')[0].setAttribute('class', newValue ? 'dark' : 'light');
+  (newValue: boolean) => {
+    let status = newValue ? 'dark' : 'light';
+    localStorage.setItem('theme', status);
+    document.getElementsByTagName('html')[0].setAttribute('class', status);
   },
   { deep: true, immediate: true }
 );
 
 watch(
-  () => route.meta.name,
-  (newValue: any) => {
-    base.setTitle(newValue ? newValue : '');
-  },
+  () => getMeta.value.name,
+  (newValue: any) => base.setTitle(newValue ? newValue : ''),
   { deep: true, immediate: true }
 );
 
 watch(
   () => route.name,
-  () => {
-    scrollStatus.current = scrollStatus.prev = 0;
-  },
+  () => (status.scroll = 0),
   { immediate: true }
 );
 </script>
 
-<style scoped>
-.app-node {
-  width: 100%;
-  height: 100%;
-}
-
-.app-node.page-loading {
-  position: fixed;
-  z-index: 9999;
-  background-image: url('@/assets/images/bg.png');
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.loading-hidden {
-  animation: pageHidden 0.4s linear forwards;
-}
-
-.icon {
-  width: 1em;
-  height: 1em;
-  fill: currentColor;
-  overflow: hidden;
-}
-
-@keyframes pageHidden {
-  0% {
-    opacity: 1;
-    z-index: 99999;
-  }
-  100% {
-    opacity: 0;
-    z-index: -1;
-  }
-}
-</style>
+<style scoped></style>

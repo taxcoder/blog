@@ -1,57 +1,52 @@
+<!--
+ * @Author: tanxiang 1571922819@qq.com
+ * @Date: 2023-06-10 14:51:02
+ * @Description:
+ * @LastEditTime: 2023-11-30 23:21:41
+ * @LastEditors: tanxiang 1571922819@qq.com
+ * @FilePath: \blog\packages\web-client\src\components\home-page\HomePage.vue
+ * @copyright: Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+-->
 <template>
-  <div id="home-page" :style="setBackImage()">
-    <page-navigation :scrollStatus="scrollStatus" :screenWidth="screenWidth" />
+  <div id="home-page" :style="setBackImage" class="bg-center bg-no-repeat bg-cover bg-fixed w-full relative home-bg">
+    <page-navigation />
     <page-title :title="props.title" />
     <flip-down :bottom="30" @toNode="toNode" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from 'vue';
-import { useBaseStore } from '@/stores/base';
-
 import { usePage } from '@tanxiang/utils';
 
-const base = useBaseStore();
-const { getOffsetTop } = usePage();
+import { useGlobalStore } from '@/stores/global';
 
-const scrollStatus: any = inject('scrollStatus');
-const screenWidth: any = inject('screenWidth');
-const scrollBar: any = inject('scrollBar');
+const { getOffsetTop } = usePage();
+const global: any = useGlobalStore();
+
+const status: any = inject('status');
 
 const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
+  title: { type: String, required: true },
 });
 
+// 跳转到指定节点
 const toNode = () => {
   let top: any = getOffsetTop(document.getElementById('start'));
   let nav: any = document.getElementById('page-nav')?.clientHeight;
   let start: any = Math.floor((top - nav) / 10) * 10;
-  if (scrollStatus.current < start) {
-    scrollBar.value.scrollBy({ left: 0, top: start - scrollStatus.current < 100 ? 10 : 100 });
+  if (status.scroll < start) {
+    window.scrollBy({ left: 0, top: start - status.scroll < 100 ? 10 : 100 });
     window.requestAnimationFrame(toNode);
   }
 };
-
-const setBackImage = () => {
-  return {
-    backgroundImage:
-      'url(' + new URL('@/assets/images/e00dbfe7082c9c50a9aaa8158dc426f1.jpeg', import.meta.url).href + ')',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    backgroundAttachment: 'fixed',
-  };
-};
+// 设置背景图片
+const setBackImage = computed(() => ({
+  backgroundImage: `url(${global.getWebSite.backgroundImage})`,
+}));
 </script>
 
 <style scoped>
-#home-page {
-  width: 100%;
-  height: 100vh;
-  position: relative;
+.home-bg {
+  height: calc(100vh / var(--zoom));
 }
 </style>

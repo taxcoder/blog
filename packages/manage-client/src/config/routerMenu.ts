@@ -1,71 +1,112 @@
-import { ItemType } from 'ant-design-vue';
 import { h, reactive } from 'vue';
 import {
   BulbOutlined,
   CoffeeOutlined,
   DatabaseOutlined,
+  DeleteOutlined,
   EditOutlined,
   FolderOutlined,
-  HomeOutlined,
+  GoldOutlined,
   ProfileOutlined,
   ReadOutlined,
   SettingOutlined,
   TagsOutlined,
+  RadarChartOutlined,
 } from '@ant-design/icons-vue';
 
-const Analysis = () => import('@/views/analysis/Analysis.vue');
-const ArticleEdit = () => import('@/views/article-edit/ArticleEdit.vue');
-const EssayEdit = () => import('@/views/essay-edit/EssayEdit.vue');
-const ListTag = () => import('@/views/list-tag/ListTag.vue');
-const ListClassification = () => import('@/views/list-classification/ListClassification.vue');
-const ListEssay = () => import('@/views/list-essay/ListEssay.vue');
-const ListArticle = () => import('@/views/list-article/ListArticle.vue');
-const Refresh = () => import('@/views/refresh/Refresh.vue');
+const Analysis = () => import('@/pages/analysis/Analysis.vue');
+const ArticleAdd = () => import('@/pages/article-edit/ArticleAdd.vue');
+const ArticleUpload = () => import('@/pages/article-edit/ArticleUpload.vue');
+const EssayAdd = () => import('@/pages/essay-edit/EssayAdd.vue');
+const EssayUpload = () => import('@/pages/essay-edit/EssayUpload.vue');
+const ListTag = () => import('@/pages/list-tag/ListTag.vue');
+const ListClassification = () => import('@/pages/list-classification/ListClassification.vue');
+const ListEssay = () => import('@/pages/list-essay/ListEssay.vue');
+const ListArticle = () => import('@/pages/list-article/ListArticle.vue');
+const RecoveryArticle = () => import('@/pages/recovery/RecoveryArticle.vue');
+const RecoveryEssay = () => import('@/pages/recovery/RecoveryEssay.vue');
+const BaseSetting = () => import('@/pages/base-setting/BaseSetting.vue');
+const Recovery = () => import('@/pages/recovery/Recovery.vue');
+const Refresh = () => import('@/pages/refresh/Refresh.vue');
 
 export enum routerName {
   home = '洞若观火',
   editor = '奇思妙想',
-  editorEssay = '直写胸臆',
-  editorArticle = '文思泉涌',
+  editorWriteEssay = '直写胸臆',
+  editorUpdateEssay = '字斟句酌',
+  editorWriteArticle = '文思泉涌',
+  editorUpdateArticle = '精益求精',
   list = '分门别类',
   listTags = '标签列表',
   listClassifications = '分类列表',
   listEssays = '随笔列表',
   listArticles = '文章列表',
+  recovery = '回收列表',
+  recoveryArticle = '回收-文章',
+  recoveryEssay = '回收-随笔',
   base = '网站管理',
+  baseSetting = '网站设置',
   refresh = '刷新',
+  notFound = '404',
+  login = '管理员登录',
 }
 
-export const routerMenu: ItemType[] = reactive([
+export const routerMenu: any[] = reactive([
   {
     label: routerName.home,
     key: 'analysis',
-    icon: () => h(HomeOutlined, { style: { fontSize: '16px' } }),
+    icon: () => h(RadarChartOutlined, { style: { fontSize: '16px' } }),
     url: '/analysis',
     component: Analysis,
     children: [],
+    keepAlive: true,
   },
   {
     label: routerName.editor,
     key: 'editor',
     icon: () => h(EditOutlined, { style: { fontSize: '16px' } }),
     url: '/editor',
+    show: true,
+    keepAlive: false,
+    redirect: '/editor/article',
     children: [
       {
-        label: routerName.editorEssay,
-        key: 'essay',
+        label: routerName.editorUpdateEssay,
+        key: 'updateEssay',
         icon: () => h(CoffeeOutlined, { style: { fontSize: '16px' } }),
-        url: '/essay',
-        component: EssayEdit,
+        url: '/essay/:id(\\d+)',
+        component: EssayUpload,
         children: [],
+        display: false,
+        keepAlive: false,
       },
       {
-        label: routerName.editorArticle,
-        key: 'article',
+        label: routerName.editorWriteEssay,
+        key: 'writeEssay',
+        icon: () => h(CoffeeOutlined, { style: { fontSize: '16px' } }),
+        url: '/essay',
+        component: EssayAdd,
+        children: [],
+        keepAlive: false,
+      },
+      {
+        label: routerName.editorWriteArticle,
+        key: 'writeArticle',
         icon: () => h(BulbOutlined, { style: { fontSize: '16px' } }),
         url: '/article',
-        component: ArticleEdit,
+        component: ArticleAdd,
         children: [],
+        keepAlive: false,
+      },
+      {
+        label: routerName.editorUpdateArticle,
+        key: 'updateArticle',
+        icon: () => h(BulbOutlined, { style: { fontSize: '16px' } }),
+        url: '/article/:id(\\d+)',
+        component: ArticleUpload,
+        children: [],
+        display: false,
+        keepAlive: false,
       },
     ],
   },
@@ -74,6 +115,8 @@ export const routerMenu: ItemType[] = reactive([
     key: 'list',
     icon: () => h(DatabaseOutlined, { style: { fontSize: '16px' } }),
     url: '/list',
+    keepAlive: true,
+    redirect: '/list/tags',
     children: [
       {
         label: routerName.listTags,
@@ -82,6 +125,7 @@ export const routerMenu: ItemType[] = reactive([
         url: '/tags',
         component: ListTag,
         children: [],
+        keepAlive: true,
       },
       {
         label: routerName.listClassifications,
@@ -90,6 +134,7 @@ export const routerMenu: ItemType[] = reactive([
         url: '/classifications',
         component: ListClassification,
         children: [],
+        keepAlive: true,
       },
       {
         label: routerName.listArticles,
@@ -98,6 +143,7 @@ export const routerMenu: ItemType[] = reactive([
         url: '/articles',
         component: ListArticle,
         children: [],
+        keepAlive: true,
       },
       {
         label: routerName.listEssays,
@@ -106,6 +152,7 @@ export const routerMenu: ItemType[] = reactive([
         url: '/essays',
         component: ListEssay,
         children: [],
+        keepAlive: true,
       },
     ],
   },
@@ -114,7 +161,50 @@ export const routerMenu: ItemType[] = reactive([
     key: 'base',
     icon: () => () => h(SettingOutlined, { style: { fontSize: '16px' } }),
     url: '/base',
-    children: [],
+    redirect: '/base/setting',
+    children: [
+      {
+        label: routerName.recovery,
+        key: 'recovery',
+        icon: () => h(DeleteOutlined, { style: { fontSize: '16px' } }),
+        url: '/recovery',
+        component: Recovery,
+        notShowChildren: true,
+        keepAlive: true,
+        redirect: '/base/recovery/article',
+        children: [
+          {
+            label: routerName.recoveryEssay,
+            key: 'recoveryEssay',
+            icon: () => h(TagsOutlined, { style: { fontSize: '16px' } }),
+            url: '/essay',
+            component: RecoveryEssay,
+            children: [],
+            display: false,
+            keepAlive: true,
+          },
+          {
+            label: routerName.recoveryArticle,
+            key: 'recoveryArticle',
+            icon: () => h(TagsOutlined, { style: { fontSize: '16px' } }),
+            url: '/article',
+            component: RecoveryArticle,
+            children: [],
+            display: false,
+            keepAlive: true,
+          },
+        ],
+      },
+      {
+        label: routerName.baseSetting,
+        key: 'setting',
+        icon: () => h(GoldOutlined, { style: { fontSize: '16px' } }),
+        url: '/setting',
+        component: BaseSetting,
+        keepAlive: true,
+        children: [],
+      },
+    ],
   },
   {
     label: routerName.refresh,
@@ -123,31 +213,36 @@ export const routerMenu: ItemType[] = reactive([
     url: '/refresh',
     children: [],
     component: Refresh,
+    keepAlive: false,
   },
 ]);
 
-export const initRouter = (router: Router) => {
-  routerMenu.forEach((menu: ItemType) => {
-    let route: any = routeParam(menu);
-    if (menu.children.length !== 0) {
-      menu.children.forEach((child: ItemType, index: number) => {
-        route.children[index] = routeParam(child);
-        route.children[index].path = menu.url + child.url;
-      });
-    }
-
+export const initRouter = (router: any) => {
+  routerMenu.forEach((menu: any) => {
+    let route: any = routeParam(null, null, menu);
     router.addRoute(route);
   });
 };
 
-const routeParam = (menu: ItemType) => {
+const routeParam = (prefix: string | null, parent: any, menu: any) => {
   return {
     name: menu.label,
-    path: menu.url,
+    path: prefix ? prefix + menu.url : menu.url,
     component: menu.component,
+    redirect: menu.redirect,
     meta: {
+      keepAlive: menu.keepAlive,
       key: menu.key,
+      editor: parent && parent.show ? parent.show : !!menu.show,
+      display: menu.display !== false,
     },
-    children: [],
+    children: isChildrenNull(prefix ? prefix + menu.url : menu.url, menu),
   };
+};
+
+const isChildrenNull = (url: string, menu: any) => {
+  if (menu.children && menu.children.length !== 0) {
+    return menu.children.map((child: any) => routeParam(url, menu, child));
+  }
+  return [];
 };

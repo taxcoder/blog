@@ -1,3 +1,12 @@
+/*
+ * @Author: tanxiang 1571922819@qq.com
+ * @Date: 2023-06-12 22:14:59
+ * @Description:
+ * @LastEditTime: 2023-12-02 21:01:36
+ * @LastEditors: tanxiang 1571922819@qq.com
+ * @FilePath: \blog\packages\web-client\src\components\home-page\index.css
+ * @copyright: Copyright (c) 2023 by 1571922819@qq.com, All Rights Reserved.
+ */
 .icon-home {
   margin-right: 8px;
   font-size: 0.98rem;
@@ -6,7 +15,7 @@
 }
 
 .icon-aircraft {
-  font-size: 0.95rem;
+  font-size: 15px;
   margin-right: 8px;
   position: relative;
   bottom: 1px;
@@ -23,7 +32,6 @@
   margin-left: 5px;
   transition: transform 0.35s;
   bottom: 0;
-  transform: rotateZ(90deg);
 }
 
 .icon-search {
@@ -41,31 +49,14 @@
 }
 
 .icon-menu {
-  font-size: 1.7rem;
   margin-left: 7px;
   font-weight: bold;
 }
 
-@media screen and (max-width: 400px) {
-  .icon-menu {
-    font-size: 1.55rem;
-  }
-}
-
-#page-nav.bgColor .nav-options,
-#page-nav.bgColor .icon-home,
-#page-nav.bgColor .icon-arrow-up,
-#page-nav.bgColor .icon-search,
-#page-nav.bgColor .icon-aircraft,
-#page-nav.bgColor .icon-brush,
-#page-nav.bgColor .icon-menu {
-  color: white !important;
-}
-
-#page-nav.active .nav-options,
 #page-nav.active .icon-home,
 #page-nav.active .icon-arrow-up,
 #page-nav.active .icon-search,
+#page-nav.active .nav-options,
 #page-nav.active .icon-aircraft,
 #page-nav.active .icon-brush,
 #page-nav.active .icon-menu {

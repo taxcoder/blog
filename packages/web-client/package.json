@@ -1,19 +1,12 @@
 {
   "name": "web-client",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "main": "./src/main.ts",
   "private": true,
   "dependencies": {
-    "vue3typed": "^0.1.5",
     "TagCloud": "^2.3.2",
+    "naive-ui": "^2.34.4",
     "qweather-icons": "^1.5.0",
-    "@vicons/carbon": "^0.12.0",
-    "@vicons/fa": "^0.12.0",
-    "@vicons/fluent": "^0.12.0",
-    "@vicons/ionicons5": "^0.12.0",
-    "@vicons/material": "^0.12.0",
-    "@vicons/tabler": "^0.12.0",
-    "@element-plus/icons-vue": "^2.1.0",
-    "element-plus": "^2.3.12",
-    "naive-ui": "^2.34.4"
+    "vue3typed": "^0.1.5"
   }
 }

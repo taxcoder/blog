@@ -4,6 +4,6 @@ import dev from './dev';
 import prod from './prod';
 
 //@ts-ignore
-let base = import.meta.env.DEV ? dev : prod;
+let base = import.meta.env.MODE === 'development' ? dev : prod;
 
 export default base;

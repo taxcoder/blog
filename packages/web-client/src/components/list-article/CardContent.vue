@@ -1,11 +1,22 @@
+<!--
+ * @Author: tanxiang 1571922819@qq.com
+ * @Date: 2023-06-21 10:43:37
+ * @Description:
+ * @LastEditTime: 2023-12-03 19:22:32
+ * @LastEditors: tanxiang 1571922819@qq.com
+ * @FilePath: \blog\packages\web-client\src\components\list-article\CardContent.vue
+ * @copyright: Copyright (c) 2023 by 1571922819@qq.com, All Rights Reserved.
+-->
 <template>
-  <div class="article-card-content">
+  <div class="article-card-content h-[330px] overflow-hidden grid relative transition-all duration-300">
     <!-- 具体的内容 -->
-    <card-content-item v-if="isShow()" :item="item" />
-    <div class="article-img">
-      <el-image :lazy="true" :style="style" fit="cover" :src="item['image']">
+    <card-content-item v-if="juiceIsShow" :item="item" />
+    <div class="article-img h-full overflow-hidden relative">
+      <el-image :lazy="true" class="w-full h-full" fit="cover" :src="item['image']">
         <template #error>
-          <div class="image-error">
+          <div
+            class="w-full h-full flex-center text-[2rem] text-[var(--el-text-color-secondary)] bg-[var(--el-fill-color-light)]"
+          >
             <el-icon>
               <Picture />
             </el-icon>
@@ -14,17 +25,13 @@
       </el-image>
     </div>
     <!-- 具体的内容 -->
-    <card-content-item v-if="!isShow()" :item="item" />
+    <card-content-item v-if="!juiceIsShow" :item="item" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
-
+// @ts-ignore
 import { Picture } from '@element-plus/icons-vue';
-import CardContentItem from './CardContentItem.vue';
-
-const style = { width: '100%', height: '100%' };
 
 const props = defineProps({
   change: Boolean,
@@ -32,20 +39,10 @@ const props = defineProps({
   item: { type: Object, required: true },
 });
 
-const isShow = () => {
-  return props.change ? !props.change : props.index % 2 !== 0;
-};
+const juiceIsShow = computed(() => (props.change ? !props.change : props.index % 2 !== 0));
 </script>
 
 <style scoped>
-.article-card-content {
-  height: 330px;
-  transition: all 0.3s;
-  overflow: hidden;
-  display: grid;
-  position: relative;
-}
-
 .article-list-card-item:nth-child(odd) .article-card-content {
   grid-template-columns: 52.5% 47.5%;
 }
@@ -54,13 +51,7 @@ const isShow = () => {
   grid-template-columns: 47.5% 52.5%;
 }
 
-.article-img {
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
-@media all and (min-width: 601px) {
+@media all and (min-width: 600px) {
   .article-img::after {
     width: 150px;
     content: '';
@@ -92,24 +83,6 @@ const isShow = () => {
     bottom: -5px;
     background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 1) 80%) !important;
   }
-}
-
-.article-img > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: width 0.3s;
-}
-
-.image-error {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: var(--el-text-color-secondary);
-  background: var(--el-fill-color-light);
 }
 
 @media screen and (min-width: 600px) and (max-width: 750px) {

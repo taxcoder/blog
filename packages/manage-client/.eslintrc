@@ -1,6 +1,0 @@
-rules: {
-// 避免ESLint警告：“'./image.png' should be imported from 'xxx'”
-'import/no-unresolved': [2, { ignore: ['^@/', '^umi/', '^react/', '^react-redux/', '^redux/', '^@umijs/'] }],
-// 避免ESLint警告：“'xxx' is missing in props validation”
-'react/prop-types': 0,
-}

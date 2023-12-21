@@ -33,12 +33,11 @@ audio:not([controls]) {
 * 2. Prevent iOS text size adjust after orientation change, without disabling
 *    user zoom.
 *
-* 1. 设置默认字体类型为 round.
+* 1. 设置默认字体类型为 sakura.
 * 2. 当用户放大或缩小页面时不改变字体大小。
 */
 
 html {
-  font-family: cover;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }

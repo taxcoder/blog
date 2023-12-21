@@ -1,63 +1,51 @@
+<!--
+ * @Author: tanxiang 1571922819@qq.com
+ * @Date: 2023-06-17 20:23:45
+ * @Description:
+ * @LastEditTime: 2023-12-03 18:55:18
+ * @LastEditors: tanxiang 1571922819@qq.com
+ * @FilePath: \blog\packages\web-client\src\components\user-info\UserIndex.vue
+ * @copyright: Copyright (c) 2023 by 1571922819@qq.com, All Rights Reserved.
+-->
 <template>
-  <div id="user-info" v-show="show">
-    <div class="user-info-container">
-      <div class="user-info-content" v-if="showUserInfo">
+  <div id="user-info" class="w-full h-full min-w-[var(--user-info)]" v-show="props.show">
+    <div class="user-info-container h-full box-border pt-[15px]">
+      <div v-if="props.showUserInfo && juiceIsDraw" class="w-full h-full p-0">
         <user-info />
         <web-site-board />
         <life-process />
         <web-site-info />
         <web-site-tag />
       </div>
-      <div class="user-info-content" v-else>
+      <div v-else-if="!props.showUserInfo && juiceIsDraw" class="w-full h-full p-0">
         <article-directory />
       </div>
+      <div v-else></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import UserInfo from '@/components/user-info/UserInfo.vue';
-import WebSiteBoard from '@/components/user-info/WebSiteBoard.vue';
-import LifeProcess from '@/components/user-info/LifeProcess.vue';
-import WebSiteInfo from '@/components/user-info/WebSiteInfo.vue';
-import WebSiteTag from '@/components/user-info/WebSiteTag.vue';
-import ArticleDirectory from '@/components/user-info/ArticleDirectory.vue';
-
-const height = ref<number>(0);
+const route = useRoute();
 
 const props = defineProps({
   show: { type: Boolean, required: true },
   showUserInfo: { type: Boolean, required: true },
 });
+
+const juiceIsDraw = computed(() => {
+  return !route.meta || !route.meta.isDraw;
+});
 </script>
 
 <style scoped>
-#user-info {
-  width: 100%;
-  height: 100%;
-  min-width: var(--user-info);
-}
-
-#user-info .user-info-container {
-  height: 100%;
-  box-sizing: border-box;
-  padding-top: 15px;
-}
-
 #list .user-left .user-info-container {
-  padding-right: 15px;
+  padding-right: 10px;
   padding-left: 30px;
 }
 
 #list .user-right .user-info-container {
   padding-right: 30px;
-  padding-left: 15px;
-}
-
-#user-info .user-info-container .user-info-content {
-  width: 100%;
-  height: 100%;
-  padding: 0;
+  padding-left: 10px;
 }
 </style>

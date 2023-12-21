@@ -1,26 +1,75 @@
-import { service, GlobalAxios } from './http.ts';
+import md5 from 'js-md5';
+import { GlobalAxios, service } from './http';
 
-const web = async (base: string) => {
-  return await service.get(`/${base}/init`);
+import { salt } from '../index';
+
+const web = async () => {
+  return await service.get(`/api/init`);
 };
 
-const text = async (base: string) => {
-  return await service.get(`/${base}/text`);
+const text = async () => {
+  return await service.get(`/api/text`);
 };
 
-const count = async (base: string) => {
-  return await service.get(`/${base}/count`);
+const count = async () => {
+  return await service.get(`/api/count`);
 };
 
-const init = (base: string = 'api') => {
-  return GlobalAxios.all([web(base), text(base), count(base)]).then((success) => {
-    let web = success[0].data;
-    web['text'] = success[1].data;
-    web['count'] = success[2].data;
+const init = () => {
+  return GlobalAxios.all([web(), text(), count()]).then((success: any) => {
+    let web: any = success[0];
+    web['text'] = success[1];
+    web['count'] = success[2];
     return new Promise((resolve) => {
       resolve(web);
     });
   });
 };
 
-export { init };
+const useAuthWebStation = (base: string = 'auth') => {
+  const updateWebStation = async (obj: any) => {
+    return await service.put(`/${base}/web/update/info`, obj);
+  };
+
+  const updateAdminStation = async (obj: any) => {
+    //@ts-ignore
+    obj.oldPassword = md5(salt + obj.oldPassword);
+    return await service.put(`/${base}/admin/update/info`, obj);
+  };
+
+  const updateAdminPassword = async (obj: any) => {
+    let data = new FormData();
+    // @ts-ignore
+    data.append('password', md5(salt + obj.password));
+    // @ts-ignore
+    data.append('oldPassword', md5(salt + obj.oldPassword));
+    return await service.put(`/${base}/admin/update/password`, data);
+  };
+
+  const loginNameInfo = async () => {
+    return await service.get(`/${base}/admin/get/info`);
+  };
+
+  const webStationInfo = async () => {
+    return web();
+  };
+
+  const weather = async () => {
+    return await service.get(`/${base}/future/weather/info`);
+  };
+
+  const updatePrintText = async (obj: { id: number; content: string }[]) => {
+    return await service.put(`/${base}/print/update/info`, obj);
+  };
+  return {
+    updateWebStation,
+    webStationInfo,
+    loginNameInfo,
+    updateAdminStation,
+    weather,
+    updatePrintText,
+    updateAdminPassword,
+  };
+};
+
+export { count, init, text, useAuthWebStation, web };

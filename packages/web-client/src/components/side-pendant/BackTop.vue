@@ -9,18 +9,13 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue';
+import ArrowUpOutline from '@/components/icon-svg/ArrowUpOutline.vue';
 
-import { ArrowUpOutline } from '@vicons/ionicons5';
-
-const scrollBar: any = inject('scrollBar');
-const screenWidth = inject('screenWidth');
-
-const isBack: any = inject('isBack');
+const setBack: Function = inject('isBack');
 
 const returnTop = () => {
-  scrollBar.value.scrollTo(0);
-  isBack();
+  window.scrollTo({ top: 0 });
+  setBack();
 };
 </script>
 

@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { routeName } from '@/enum';
 
 import ArticleList from '@/views/article-list/ArticleList.vue';
-import { useBaseStore } from '@/stores/base';
 
 const ClassificationArticle = () => import('@/views/classification-article/ClassificationArticle.vue');
 const TagList = () => import('@/views/tag-list/TagList.vue');
@@ -26,7 +25,7 @@ const router = createRouter({
       component: ArticleList,
       meta: {
         name: routeName.home,
-        position: false,
+        position: true,
         showUserInfo: true,
         isDraw: false,
       },
@@ -36,7 +35,7 @@ const router = createRouter({
       path: '/list/archived',
       component: ArchivedList,
       meta: {
-        name: '归档',
+        name: routeName.archived,
         position: true,
         showUserInfo: true,
         isDraw: false,
@@ -47,7 +46,7 @@ const router = createRouter({
       path: '/list/tag',
       component: TagList,
       meta: {
-        name: '标签',
+        name: routeName.tag,
         position: true,
         showUserInfo: false,
         isDraw: true,
@@ -80,7 +79,7 @@ const router = createRouter({
       path: '/list/essay',
       component: EssayList,
       meta: {
-        name: '随笔',
+        name: routeName.essay,
         position: true,
         showUserInfo: false,
         isDraw: true,
@@ -91,7 +90,6 @@ const router = createRouter({
       path: '/articles/:id',
       component: ArticlePage,
       meta: {
-        name: routeName.article,
         position: true,
         showUserInfo: false,
         isDraw: false,

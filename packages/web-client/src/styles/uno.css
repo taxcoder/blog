@@ -2,7 +2,7 @@
 @unocss default;
 
 .flex-center {
-  @apply flex items-center justify-center;
+  @apply important-flex important-items-center important-justify-center;
 }
 
 .side-button {
@@ -37,6 +37,14 @@
 
 .foot-span {
   @apply py-0 px-[5px] inline-block  text-[0.95rem];
+}
+
+.search-height {
+  height: calc(calc(90vh / var(--zoom)) - 53px - 40px - 75px);
+}
+
+.search-height-all {
+  height: calc(calc(100vh / var(--zoom)) - 53px - 40px - 75px);
 }
 
 .dis-scroll {

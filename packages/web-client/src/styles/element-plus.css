@@ -4,8 +4,12 @@
 
 .el-main {
   padding: 0 !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   height: var(--header-height);
+}
+
+.el-aside {
+  overflow: visible !important;
 }
 
 #list .el-main {
@@ -17,8 +21,26 @@
 }
 
 .el-message-box {
-  height: 90%;
+  min-height: 14%;
+  max-height: calc(90vh / var(--zoom));
+  transition: max-height 0.2s;
   max-width: 600px !important;
+  -webkit-transition: max-height 0.2s;
+  -moz-transition: max-height 0.2s;
+  -ms-transition: max-height 0.2s;
+  -o-transition: max-height 0.2s;
+}
+
+@media (max-width: 600px) {
+  .el-message-box {
+    max-height: 100% !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  .el-overlay-message-box {
+    padding: 0 !important;
+  }
 }
 
 .el-input {
@@ -38,11 +60,7 @@
 
 .el-divider--horizontal {
   margin: 0 !important;
-  width: 100px;
-}
-
-.el-button + .el-button {
-  margin: 0 !important;
+  width: 100%;
 }
 
 .el-pagination {
@@ -95,6 +113,16 @@
   padding: 0 !important;
 }
 
+.warp::-webkit-scrollbar,
+.el-tree::-webkit-scrollbar {
+  display: none !important;
+}
+
+.warp,
+.el-tree {
+  scrollbar-width: none !important; /* firefox */
+  -ms-overflow-style: none !important; /* IE 10+ */
+}
 /*.user-info-content::-webkit-scrollbar {*/
 /*    display: none; !* Chrome Safari *!*/
 /*}*/

@@ -1,3 +1,12 @@
+/*
+ * @Author: tanxiang 1571922819@qq.com
+ * @Date: 2023-06-18 08:54:28
+ * @Description:
+ * @LastEditTime: 2023-12-02 20:45:57
+ * @LastEditors: tanxiang 1571922819@qq.com
+ * @FilePath: \blog\utils\src\day.ts
+ * @copyright: Copyright (c) 2023 by 1571922819@qq.com, All Rights Reserved.
+ */
 const useDate = () => {
   const current = () => {
     return new Date().getTime();
@@ -8,7 +17,7 @@ const useDate = () => {
     return Math.floor(residue / (1000 * 60 * 60 * 24));
   };
 
-  const headway = (time: number, isDisabled: boolean = false) => {
+  const headway = (time: number, second: boolean = true, isDisabled: boolean = false) => {
     let residue: number = current() - time;
     // 年
     let yearDate: number = residue / (1000 * 60 * 60 * 24 * 365);
@@ -23,19 +32,44 @@ const useDate = () => {
       { key: Math.floor(yearDate), prefix: '年' },
       { key: Math.floor(dayDate), prefix: '天' },
       { key: Math.floor(hourData), prefix: '时' },
-      { key: Math.floor(minuteData), prefix: '分' },
+      { key: Math.floor(minuteData), prefix: '分钟' },
     ];
+
+    if (!!second) {
+      //秒
+      let seconds: number = (minuteData - Math.floor(minuteData)) * 60;
+      times.push({ key: Math.floor(seconds), prefix: '秒' });
+    }
+
     let size: number = 0;
     let date: string = '';
     while (size < times.length) {
       let key: number = times[size].key;
       let flag: boolean = key < 10 && size !== 0 && !isDisabled;
-      date = date + (key !== 0 ? (flag ? '0' + key : key) + times[size].prefix : date + '');
+      date =
+        date +
+        (key !== 0
+          ? (flag ? '0' + key : key) + times[size].prefix
+          : size === times.length - 1
+          ? '00' + times[size].prefix
+          : '');
 
       if (isDisabled && date !== '') break;
       size++;
     }
     return date;
+  };
+
+  const headwayBoard = (time: number) => {
+    let residue: number = current() - time;
+    // 年
+    let yearDate: number = residue / (1000 * 60 * 60 * 24 * 365);
+    // 天
+    let dayDate: number = (yearDate - Math.floor(yearDate)) * 365;
+
+    return Math.floor(yearDate) === 0
+      ? Math.floor(dayDate) + '天'
+      : Math.floor(yearDate) + '年' + Math.floor(dayDate) + '天';
   };
 
   const year = (time: number) => {
@@ -66,7 +100,7 @@ const useDate = () => {
     let date = new Date(time);
     return date.getFullYear() + '年' + date.getMonth() + '月' + date.getDate() + '日';
   };
-  return { current, headway, days, shortTime, year, chineseTime };
+  return { current, headway, days, shortTime, year, chineseTime, headwayBoard };
 };
 
 export default useDate;

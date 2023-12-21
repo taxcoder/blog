@@ -3,7 +3,9 @@
   "include": ["vite.config.*", "vitest.config.*", "cypress.config.*", "playwright.config.*"],
   "compilerOptions": {
     "composite": true,
-    "module": "ESNext",
-    "types": ["node"]
-  }
+    "module": "ES6",
+    "types": ["node"],
+    "sourceMap": true
+  },
+  "exclude": ["node_modules"]
 }
