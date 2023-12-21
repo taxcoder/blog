@@ -34,3 +34,4 @@ docker-compose.yaml
 *.bat
 *.js
 *js.map
+!common/src/assets/font/iconfont/iconfont.js
