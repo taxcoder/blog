@@ -33,3 +33,4 @@ docker-compose.yaml
 *.conf
 *.bat
 *.js
+*js.map

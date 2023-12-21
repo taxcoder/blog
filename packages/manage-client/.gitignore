@@ -30,3 +30,4 @@ coverage
 
 *.conf
 *.js
+*js.map
