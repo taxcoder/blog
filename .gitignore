@@ -48,4 +48,4 @@ dist-ssr
 *.sw?
 
 *.js
-*js.map
+*js.map!/blog-server/redis.dockerfile
