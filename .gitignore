@@ -4,6 +4,7 @@
 !/blog-server/redis.conf
 !/blog-server/.idea/
 !/blog-server/.gitignore
+!/blog-server/lib/
 
 !/blog-web/.idea/
 !/blog-web/upload.bat
