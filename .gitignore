@@ -1,3 +1,16 @@
+!/blog-web/upload.bat
+!/blog-web/Dockerfile
+
+!/blog-web/node_modules/
+!/blog-web/packages/manage-client/node_modules/
+!/blog-web/packages/web-client/node_modules/
+!/blog-web/common/node_modules/
+!/blog-web/apis/node_modules/
+!/blog-web/utils/node_modules/
+
+!/blog-web/packages/manage-client/dist
+!/blog-web/packages/web-client/dist
+
 # Logs
 logs
 *.log
@@ -8,30 +21,26 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-pnpm-store
-.DS_Store
 dist
 dist-ssr
-coverage
 *.local
-
-/cypress/videos/
-/cypress/screenshots/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
+.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-md
-docker-compose.yaml
-*.conf
-*.bat
 *.js
-*js.map
-!common/src/assets/font/iconfont/iconfont.js
+*js.map!/blog-web/packages/web-client/nginx.conf
+!/blog-web/packages/manage-client/nginx.conf
+!/blog-server/target/
+!/blog-server/java.dockerfile
+
+!/blog-server/redis.dockerfile
+!/blog-server/redis.conf
