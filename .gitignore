@@ -43,4 +43,5 @@ dist-ssr
 !/blog-server/java.dockerfile
 
 !/blog-server/redis.dockerfile
-!/blog-server/redis.conf
+!/blog-server/redis.conf!/blog-server/.idea/
+!/blog-web/.idea/
